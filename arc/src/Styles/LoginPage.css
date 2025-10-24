@@ -1,0 +1,130 @@
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5rem;
+}
+
+.login-box {
+    background-color: var(--bg-secondary);
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    /* Nicer rounding */
+    text-align: center;
+    /* Softer, more modern shadow */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--bg-tertiary);
+    /* Subtle border */
+    max-width: 450px;
+    width: 100%;
+}
+
+[data-theme="dark"] .login-box {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--bg-tertiary);
+}
+
+.login-box h1 {
+    margin-top: 0;
+    color: var(--text-primary);
+}
+
+/* NEW: Style for the subtitle <p> tag */
+.login-box .auth-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    margin-top: -0.5rem;
+    /* Pull it closer to the h1 */
+}
+
+/* This is a new, simplified form style for login/register */
+.form-group-stacked {
+    text-align: left;
+    margin-bottom: 1.25rem;
+    /* Added a bit more space */
+}
+
+.form-group-stacked label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.form-group-stacked input {
+    width: 100%;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: 6px;
+    /* Nicer rounding */
+    padding: 0.75rem;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-primary);
+    font-size: 1rem;
+    /* ADDED: Smooth transition */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* NEW: Focus style for inputs */
+.form-group-stacked input:focus {
+    outline: none;
+    border-color: var(--accent-secondary);
+    /* Use our teal accent */
+    box-shadow: 0 0 0 3px rgba(92, 157, 159, 0.3);
+    /* Add a soft glow */
+}
+
+
+.login-submit-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    /* Nicer rounding */
+    cursor: pointer;
+    background-color: var(--accent-primary);
+    color: white;
+    /* Added transform to transition */
+    transition: background-color 0.2s, transform 0.1s ease-in-out;
+    margin-top: 1rem;
+}
+
+.login-submit-btn:hover {
+    background-color: #a22e40;
+    transform: translateY(-2px);
+    /* Add a "pop" on hover */
+}
+
+/* NEW: Focus style for button */
+.login-submit-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(193, 61, 80, 0.4);
+    /* Glow matching the button */
+}
+
+.login-redirect {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.login-redirect a {
+    font-weight: 600;
+    color: var(--accent-secondary);
+}
+
+.error-message {
+    color: var(--accent-primary);
+    background-color: rgba(193, 61, 80, 0.1);
+    border: 1px solid var(--accent-primary);
+    border-radius: 4px;
+    padding: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 1rem;
+    /* Added space */
+}
