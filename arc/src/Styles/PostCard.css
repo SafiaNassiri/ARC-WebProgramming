@@ -1,0 +1,81 @@
+.post-card {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+[data-theme="dark"] .post-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.post-card-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 0.5rem 1rem;
+}
+
+.post-card-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+}
+
+.post-card-author-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-card-author {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.post-card-timestamp {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.post-card-content {
+    padding: 0.5rem 1rem 1rem 1rem;
+    color: var(--text-secondary);
+}
+
+.post-card-content p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.post-card-footer {
+    display: flex;
+    border-top: 1px solid var(--bg-tertiary);
+    padding: 0.5rem 0;
+}
+
+.post-card-button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 0.9rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.post-card-button:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--accent-primary);
+}

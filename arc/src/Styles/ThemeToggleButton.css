@@ -1,0 +1,25 @@
+.theme-toggle-button {
+    background-color: var(--accent-secondary);
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: 1rem;
+}
+
+.theme-toggle-button:hover {
+    background-color: var(--accent-primary);
+}
+
+[data-theme="dark"] .theme-toggle-button {
+    background-color: var(--accent-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .theme-toggle-button:hover {
+    background-color: var(--accent-primary);
+}

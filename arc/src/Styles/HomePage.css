@@ -1,0 +1,113 @@
+.home-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.home-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow: hidden;
+}
+
+.home-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.welcome-box {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    border-left: 5px solid var(--accent-secondary);
+}
+
+.welcome-box h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-size: 1.75rem;
+}
+
+.welcome-box p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.sidebar-card {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .sidebar-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-card-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.sidebar-card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.sidebar-card-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-card-list li {
+    padding: 0.75rem 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--bg-tertiary);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar-card-list li:last-child {
+    border-bottom: none;
+}
+
+.sidebar-card-list li:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.friend-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.friend-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--accent-soft);
+}
+
+.friend-status {
+    font-size: 0.7rem;
+    color: #28a745;
+}
+
+@media (max-width: 900px) {
+    .home-layout {
+        grid-template-columns: 1fr;
+    }
+}
