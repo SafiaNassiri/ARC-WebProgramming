@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Login page for A.R.C. web application.
  * Users can enter their email and password to access their account.
  */

@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Dashboard page displaying trending games, hot discussions, online friends, and recommended forums for the logged-in user.
  */
 

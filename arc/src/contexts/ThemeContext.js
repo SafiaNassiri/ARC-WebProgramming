@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Provides a global theme state and toggle function for the A.R.C. web application.
  * Manages "light" and "dark" mode preferences and applies them to the document root.
  *

@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Displays a simple "under construction" message for pages
  * or features that are not yet implemented.
  */

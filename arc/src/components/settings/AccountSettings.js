@@ -1,4 +1,7 @@
 /** 
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Allows the authenticated user to:
  *  - View their account email
  *  - Access password reset functionality (future feature)

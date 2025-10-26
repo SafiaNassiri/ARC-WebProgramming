@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Provides global authentication and user data management for
  * the A.R.C. (Archive. Record. Connect.) web application.
  * 

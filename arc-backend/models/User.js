@@ -1,3 +1,9 @@
+/** 
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
+*/
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

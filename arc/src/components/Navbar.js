@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Provides global site navigation with responsive behavior.
  * Includes desktop links, a mobile burger menu, and a user profile dropdown.
  *

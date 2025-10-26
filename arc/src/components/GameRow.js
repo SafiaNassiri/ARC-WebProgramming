@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Displays a horizontally scrollable list of game cards with left/right navigation arrows.
  * Each card represents an individual game object.
  */

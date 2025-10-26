@@ -1,4 +1,7 @@
 /** 
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Allows users to edit and manage information displayed
  * publicly on their A.R.C. (Archive. Record. Connect.) profile.
  * 

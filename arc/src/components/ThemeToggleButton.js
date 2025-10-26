@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * A reusable button that allows users to toggle between
  * light and dark themes across the A.R.C. web application.
  *

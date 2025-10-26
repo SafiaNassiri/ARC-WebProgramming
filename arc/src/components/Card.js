@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Displays a single game card, typically used in carousels or grids.
  * It shows the game's image, title, and a brief description (like its rating).
  *

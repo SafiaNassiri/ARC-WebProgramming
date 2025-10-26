@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Registration page for new users to create an A.R.C. account.
  * Includes client-side validation for password confirmation and
  * integrates with AuthContext for registration.

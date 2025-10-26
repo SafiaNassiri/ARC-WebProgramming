@@ -1,3 +1,9 @@
+/** 
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
+*/
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');

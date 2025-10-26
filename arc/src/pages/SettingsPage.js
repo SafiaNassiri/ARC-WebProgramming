@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Main settings page for the A.R.C. application.
  * Users can switch between Profile, Account, and Display settings.
  */

@@ -1,3 +1,9 @@
+/**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
+ */
+
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 

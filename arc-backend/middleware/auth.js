@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Middleware to protect routes
  * Checks for a JWT token in the 'x-auth-token' header
  */

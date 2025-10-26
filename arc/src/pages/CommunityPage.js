@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Displays the Community Feed where users can view posts, 
  * join forum discussions, and (in future updates) create posts.
  *

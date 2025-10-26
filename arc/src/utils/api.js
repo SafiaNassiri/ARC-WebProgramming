@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Axios instances for the A.R.C. application:
  * 1. `api` for backend requests
  * 2. `rawgApi` for RAWG API requests

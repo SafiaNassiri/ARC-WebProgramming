@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * A dynamic page that fetches and displays trending and recommended
  * games from the RAWG API, along with featured and platform sections.
  *

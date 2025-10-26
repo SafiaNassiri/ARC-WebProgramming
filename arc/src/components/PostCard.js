@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Displays an individual post within the A.R.C. community feed.
  * Each post includes:
  *  - Author info (name + avatar color)

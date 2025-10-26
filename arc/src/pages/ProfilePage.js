@@ -1,4 +1,7 @@
 /**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
  * Displays the user's profile including game library, achievements, and posts.
  * Users can switch between tabs to view different sections of their profile.
  */

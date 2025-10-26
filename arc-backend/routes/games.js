@@ -1,3 +1,9 @@
+/** 
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Date: October 2025
+*/
+
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
