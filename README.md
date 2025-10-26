@@ -1,4 +1,5 @@
 # A.R.C. (Archive. Record. Connect.)
+Author: Safia Nassiri
 ### *A Gamer's Social Hub*
 
 ![React](https://img.shields.io/badge/Frontend-React-blue?logo=react)
