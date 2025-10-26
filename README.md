@@ -21,10 +21,8 @@ A web application built with the **MERN stack** designed for gamers to showcase 
 4. [Project Structure](#-project-structure)
 5. [Setup and Installation](#️-setup-and-installation)
 6. [Environment Variables](#-environment-variables)
-7. [Screenshots](#️-screenshots-optional)
-8. [Future Features](#-future-features)
-9. [License](#-license)
-10. [Author](#-author)
+7. [Future Features](#-future-features)
+8. [Author](#-author)
 
 ---
 
