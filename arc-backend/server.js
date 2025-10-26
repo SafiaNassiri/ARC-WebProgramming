@@ -1,18 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config(); // Loads variables from .env file
+require('dotenv').config(); // Load environment variables from .env
 
-// --- Initialize Express App ---
+// Initialize Express App 
 const app = express();
 
-// --- Middleware ---
-// Enable All CORS Requests
+// Middleware 
+// Enable Cross-Origin Resource Sharing (CORS)
+// It lets the frontend (localhost:3000) talk to your backend (localhost:5000) without the browser blocking it.
 app.use(cors());
-// Body Parser: Allow app to accept JSON
+
+// Parse incoming JSON requests
 app.use(express.json());
 
-// --- Database Connection ---
+// Database Connection 
 const db = process.env.MONGO_URI;
 
 mongoose
@@ -20,17 +22,13 @@ mongoose
     .then(() => console.log('MongoDB Connected...'))
     .catch((err) => {
         console.error('MongoDB Connection Error:', err.message);
-        process.exit(1); // Exit process with failure
+        process.exit(1); // Exit process if DB connection fails
     });
 
-// --- Define Routes ---
-// Any URL starting with /api/auth will be handled by routes/auth.js
+// Define API Routes
 app.use('/api/auth', require('./routes/auth'));
-// Any URL starting with /api/games will be handled by routes/games.js
 app.use('/api/games', require('./routes/games'));
 
-// --- Start Server ---
-// Listen for connections
+// Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
-
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -33,7 +33,7 @@
     color: var(--text-secondary);
     font-style: italic;
 }
- 
+
 .profile-tabs {
     display: flex;
     gap: 0.5rem;
@@ -67,8 +67,7 @@
     border-bottom-color: var(--accent-primary);
 }
 
-.profile-tab-content {
-}
+.profile-tab-content {}
 
 .achievements-grid {
     display: grid;
@@ -96,8 +95,7 @@
     flex-shrink: 0;
 }
 
-.achievement-info {
-}
+.achievement-info {}
 
 .achievement-title {
     margin: 0;

@@ -115,7 +115,6 @@ A.R.C./
 - MongoDB Atlas account and connection string
 - RAWG API Key → [https://rawg.io/apidocs](https://rawg.io/apidocs)
 
----
 
 ### Backend Setup
 
@@ -130,13 +129,15 @@ Create a .env file inside arc-backend/ with:
 ```bash
 MONGO_URI=YOUR_MONGODB_ATLAS_CONNECTION_STRING
 JWT_SECRET=YOUR_CHOSEN_JWT_SECRET_STRING
-PORT=5000  # optional
+PORT=5000
 ```
 Then start the backend:
 ```bash
 npm run dev
 ```
 The server should start at http://localhost:5000 and connect to MongoDB.
+
+---
 
 ## Frontend Setup
 ``` bash
@@ -158,6 +159,8 @@ npm start
 ```
 The React app should open at http://localhost:3000.
 
+---
+
 ## Environment Variables
 # Backend (arc-backend/.env)
 | Variable     | Description                           |
@@ -173,6 +176,8 @@ The React app should open at http://localhost:3000.
 
 ⚠️ Restart your servers after editing .env files.
 
+---
+
 ## Future Features
 
 - Dynamic Achievements fetching (API integration)
@@ -181,6 +186,8 @@ The React app should open at http://localhost:3000.
 - Commenting and liking posts
 - Improved UI/UX with better loading/error states
 - Platform connection (Steam, Xbox, etc.)
+
+---
 
 ## Author
 

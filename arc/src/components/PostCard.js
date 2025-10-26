@@ -1,34 +1,56 @@
-import React from 'react';
-import '../Styles/PostCard.css';
-import { FaHeart, FaCommentAlt } from 'react-icons/fa';
+/**
+ * Displays an individual post within the A.R.C. community feed.
+ * Each post includes:
+ *  - Author info (name + avatar color)
+ *  - Timestamp of the post
+ *  - Post content
+ *  - Action buttons (Like & Comment)
+ */
 
+import React from 'react';
+import { FaHeart, FaCommentAlt } from 'react-icons/fa';
+import '../Styles/PostCard.css';
+
+// Renders a post card with author, timestamp, and post content. Includes placeholder buttons for future interactions.
 function PostCard({ post }) {
     const { author, avatarColor, timestamp, content } = post;
 
     return (
-        <div className="post-card">
-            <div className="post-card-header">
+        <article className="post-card" aria-label={`Post by ${author}`}>
+            <header className="post-card-header">
                 <div
                     className="post-card-avatar"
                     style={{ backgroundColor: avatarColor || 'var(--accent-primary)' }}
+                    aria-hidden="true"
                 ></div>
+
                 <div className="post-card-author-info">
                     <span className="post-card-author">{author}</span>
-                    <span className="post-card-timestamp">{timestamp}</span>
+                    <time className="post-card-timestamp" dateTime={timestamp}>
+                        {timestamp}
+                    </time>
                 </div>
-            </div>
+            </header>
             <div className="post-card-content">
                 <p>{content}</p>
             </div>
-            <div className="post-card-footer">
-                <button className="post-card-button">
-                    <FaHeart /> <span>Like</span>
+            <footer className="post-card-footer">
+                <button
+                    type="button"
+                    className="post-card-button"
+                    aria-label="Like this post"
+                >
+                    <FaHeart aria-hidden="true" /> <span>Like</span>
                 </button>
-                <button className="post-card-button">
-                    <FaCommentAlt /> <span>Comment</span>
+                <button
+                    type="button"
+                    className="post-card-button"
+                    aria-label="Comment on this post"
+                >
+                    <FaCommentAlt aria-hidden="true" /> <span>Comment</span>
                 </button>
-            </div>
-        </div>
+            </footer>
+        </article>
     );
 }
 

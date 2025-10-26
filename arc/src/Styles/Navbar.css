@@ -1,19 +1,15 @@
-/* --- Base Navbar Styles --- */
 .navbar {
     display: flex;
     align-items: center;
     background-color: var(--bg-secondary);
     padding: 0 1rem;
-    /* Adjusted padding for smaller screens */
     border-bottom: 1px solid var(--bg-tertiary);
     height: 60px;
     position: relative;
-    /* Needed for absolute positioning of mobile menu */
 }
 
 .navbar-logo-link {
     text-decoration: none;
-    /* Removed margin-right: auto; to allow flex properties later */
 }
 
 .navbar-logo {
@@ -21,7 +17,6 @@
     flex-direction: column;
     line-height: 1.1;
     flex-shrink: 0;
-    /* Prevent logo from shrinking */
 }
 
 .navbar-logo-main {
@@ -36,17 +31,12 @@
     font-weight: 500;
 }
 
-/* --- Desktop Links --- */
-/* Class added in JS */
 .desktop-links {
     list-style: none;
     display: flex;
-    /* Display on desktop */
     margin: 0;
     padding: 0;
     margin-left: 1rem;
-    /* Spacing from logo */
-    /* Allow links to take available space but push auth section right */
     margin-right: auto;
 }
 
@@ -65,7 +55,6 @@
     align-items: center;
     gap: 0.5rem;
     white-space: nowrap;
-    /* Prevent wrapping */
     transition: color 0.2s, background-color 0.2s;
 }
 
@@ -80,24 +69,15 @@
     font-weight: 600;
 }
 
-/* --- Auth Section (Right side) --- */
-/* Class added in JS */
 .navbar-auth-section {
     display: flex;
-    /* Display on desktop */
     align-items: center;
     margin-left: 1rem;
-    /* Space from nav links */
     flex-shrink: 0;
-    /* Prevent auth section from shrinking */
 }
 
-/* Desktop Profile Menu */
-/* Class added in JS */
 .desktop-profile {
     position: relative;
-    /* padding-bottom: 8px; */
-    /* Removed - hover logic changed */
 }
 
 .user-menu-button {
@@ -142,7 +122,6 @@
 .user-dropdown {
     position: absolute;
     top: calc(100% + 5px);
-    /* Position below button with small gap */
     right: 0;
     background-color: var(--bg-secondary);
     border: 1px solid var(--bg-tertiary);
@@ -150,19 +129,15 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     min-width: 180px;
     z-index: 20;
-    /* Ensure dropdown is above other content */
     padding: 0.5rem 0;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-/* Style individual items */
 .dropdown-item {
     display: block;
-    /* Make it block level */
     width: 100%;
-    /* Take full width */
     background: none;
     border: none;
     color: var(--text-primary);
@@ -170,7 +145,6 @@
     text-decoration: none;
     font-size: 0.95rem;
     text-align: left;
-    /* Align text left */
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
 }
@@ -178,43 +152,32 @@
 .dropdown-item:hover {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
-    /* Ensure text color remains readable */
 }
 
-/* Specific style for logout button in dropdown */
 .dropdown-logout-btn {
     color: var(--accent-primary);
-    /* Use accent color for logout */
     font-weight: 600;
 }
 
 .dropdown-logout-btn:hover {
     background-color: rgba(193, 61, 80, 0.1);
-    /* Light red background on hover */
 }
 
-
-/* Desktop Login/Sign Up Buttons */
-/* Class added in JS */
 .desktop-auth {
     display: flex;
-    /* Display on desktop */
     align-items: center;
     gap: 0.75rem;
 }
 
 .navbar-login-btn,
 .navbar-signup-btn {
-    /* Changed class name to match JS */
     border: none;
     padding: 0.5rem 1rem;
-    /* Slightly smaller padding */
     border-radius: 4px;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
     font-size: 0.9rem;
-    /* Slightly smaller font */
     transition: background-color 0.2s, color 0.2s;
     white-space: nowrap;
 }
@@ -225,50 +188,35 @@
 }
 
 .navbar-login-btn:hover {
-    /* Slightly darker on hover */
     background-color: color-mix(in srgb, var(--bg-tertiary), #000 10%);
 }
 
 .navbar-signup-btn {
-    /* Changed class name to match JS */
     background-color: var(--accent-primary);
     color: white;
 }
 
 .navbar-signup-btn:hover {
-    /* Changed class name to match JS */
     background-color: #a22e40;
-    /* Darker red */
 }
 
-
-/* --- Burger Menu Button (Mobile Only) --- */
 .burger-menu-button {
     display: none;
-    /* Hidden by default on larger screens */
     background: none;
     border: none;
     font-size: 1.8rem;
-    /* Larger icon */
     color: var(--text-primary);
     cursor: pointer;
     padding: 0.5rem;
     margin-left: 1rem;
-    /* Space from auth/profile */
     z-index: 1001;
-    /* Above mobile menu */
 }
 
-
-/* --- Mobile Menu Overlay --- */
 .navbar-mobile-menu {
-    /* Default styles for when it IS rendered by React */
     display: flex;
-    /* Use flex display when shown */
     flex-direction: column;
     position: absolute;
     top: 60px;
-    /* Below navbar */
     left: 0;
     right: 0;
     background-color: var(--bg-secondary);
@@ -276,23 +224,12 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 1rem;
     z-index: 1000;
-    /* Add animation if desired */
-    /* animation: slideDown 0.3s ease-out; */
 }
-
-
-/* Define animation if used */
-/* @keyframes slideDown {
-  from { top: 40px; opacity: 0; }
-  to { top: 60px; opacity: 1; }
-} */
-
 
 [data-theme="dark"] .navbar-mobile-menu {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Class added in JS */
 .mobile-links-list {
     list-style: none;
     padding: 0;
@@ -302,38 +239,29 @@
 
 .mobile-links-list li {
     padding: 0;
-    /* Remove padding from li */
     width: 100%;
 }
 
 .mobile-links-list a {
     padding: 0.75rem 1rem;
-    /* Add padding to links */
     display: block;
-    /* Make links full width */
     width: 100%;
     border-radius: 4px;
-    /* Consistent rounding */
     margin-bottom: 0.5rem;
     color: var(--text-secondary);
-    /* Match desktop link color */
     text-decoration: none;
     font-weight: 500;
     font-size: 1rem;
-    /* display: flex; Align icon and text - handled by parent anchor */
     align-items: center;
     gap: 0.5rem;
     white-space: nowrap;
     transition: color 0.2s, background-color 0.2s;
 }
 
-/* Need to style the span inside the mobile link */
 .mobile-links-list a span {
     vertical-align: middle;
-    /* Align text with icon */
 }
 
-/* Ensure active styles apply in mobile too */
 .mobile-links-list a.active {
     color: var(--text-primary);
     background-color: var(--bg-tertiary);
@@ -352,12 +280,10 @@
     margin: 1rem 0;
 }
 
-/* Class added in JS */
 .mobile-auth-section {
     width: 100%;
 }
 
-/* Class added in JS */
 .mobile-profile-menu .dropdown-item {
     width: 100%;
     margin-bottom: 0.5rem;
@@ -372,7 +298,6 @@
     font-size: 1.1rem;
 }
 
-/* Class added in JS */
 .mobile-auth-buttons {
     display: flex;
     flex-direction: column;
@@ -382,45 +307,25 @@
 .mobile-auth-buttons button {
     width: 100%;
     padding: 0.75rem 1rem;
-    /* Consistent button padding */
 }
 
-
-/* --- Media Query for Mobile --- */
-/* Adjust breakpoint as needed (e.g., 768px for tablets) */
 @media (max-width: 768px) {
     .navbar {
         padding: 0 1rem;
-        /* Reduce padding */
         justify-content: space-between;
-        /* Ensure logo and burger space out */
     }
 
-    /* --- HIDE DESKTOP ELEMENTS ON MOBILE --- */
     .desktop-links,
-    /* Hide specific desktop links ul */
     .navbar-auth-section {
-        /* Hide the entire desktop auth section */
         display: none;
     }
 
-    /* --- SHOW BURGER BUTTON ON MOBILE --- */
     .burger-menu-button {
         display: block;
-        /* Show burger button */
     }
-
-    /*
-   * The .navbar-mobile-menu's display (whether it exists in the DOM)
-   * is controlled by the isMobileMenuOpen state in Navbar.js
-   * ( {isMobileMenuOpen && <div className="navbar-mobile-menu">...</div>} )
-   * We don't need a specific display rule here because when it IS rendered,
-   * its default styles (like display: flex, position: absolute) will apply.
-   */
 
     .navbar-logo-link {
         margin-right: 0;
-        /* Remove auto margin */
     }
 
 }

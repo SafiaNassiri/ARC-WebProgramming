@@ -1,18 +1,15 @@
-import axios from 'axios';
+import { api } from './api'; // The Axios backend instance
 
-// This function takes a token...
-const setAuthToken = (token) => {
+/**
+ * Store or remove auth token.
+ * Interceptor in `api` automatically applies token to requests.
+ */
+const setupAuthToken = (token) => {
     if (token) {
-        // If a token exists, add it to the 'x-auth-token' header
-        // for every single 'axios' request.
-        axios.defaults.headers.common['x-auth-token'] = token;
-        localStorage.setItem('token', token); // Also save/update in localStorage
+        localStorage.setItem('token', token);
     } else {
-        // If there's no token, delete the header
-        delete axios.defaults.headers.common['x-auth-token'];
-        localStorage.removeItem('token'); // Also remove from localStorage
+        localStorage.removeItem('token');
     }
 };
 
-export default setAuthToken;
-
+export default setupAuthToken;

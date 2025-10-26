@@ -1,242 +1,228 @@
+/**
+ * Provides global authentication and user data management for
+ * the A.R.C. (Archive. Record. Connect.) web application.
+ * 
+ * This context handles:
+ *  - User registration, login, and logout
+ *  - Persistent authentication using JWT tokens
+ *  - Fetching user-related data (favorites, posts)
+ *  - Managing API request errors gracefully
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Assuming api.js now handles axios instances and token logic primarily
-// --- FIX: Trying a different path to go UP two directories to 'src' if AuthContext is deep (e.g., src/contexts/AuthContext.js) ---
-// If 'src/utils/api.js' is correct, then the path from 'src/contexts/' must be '../utils/api'. We will try a different notation if that fails.
-import { api, setupAuthToken } from '../utils/api'; // Trying absolute path from 'src' root
+import { api, setupAuthToken } from '../utils/api';
 
-// Create The Context
+
+// Context Initialization
 const AuthContext = createContext();
-// ... (rest of the file is unchanged) ...
-// Create a Custom Hook
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
 
-// Helper function to get error messages
+// Custom hook for consuming AuthContext.
+export const useAuth = () => useContext(AuthContext);
+
+// Helper Functions
+// Extracts a human-readable message from an Axios error object.
 const getErrorMessage = (err) => {
-    if (err.response && err.response.data && err.response.data.msg) {
-        // Error message from our backend (e.g., "Invalid credentials")
+    if (err.response?.data?.msg) {
         return err.response.data.msg;
-    } else if (err.response && err.response.status === 401) {
-        // Specific handling for unauthorized errors
+    } else if (err.response?.status === 401) {
         return 'Unauthorized. Please log in again.';
     } else if (err.request) {
-        // Network error (e.g., server down, CORS issue)
         return 'Cannot connect to server. Please try again later.';
     } else {
-        // Other unexpected errors
-        console.error("Unexpected Error:", err); // Log the full error for debugging
+        console.error('Unexpected Error:', err);
         return 'An unexpected error occurred.';
     }
 };
 
-// Create The Provider Component
+// AuthProvider Component
+// AuthProvider component wraps the app and provides authentication state.
 export function AuthProvider({ children }) {
+    // State Management
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(true); // *** This is the MAIN auth loading state ***
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [favoriteGames, setFavoriteGames] = useState([]);
     const [posts, setPosts] = useState([]);
+
     const navigate = useNavigate();
 
-    // Backend URL is now managed within api.js instance
-    // const backendUrl = 'http://localhost:5000/api';
-
-    // Helper function to get favorites
+    // Data Fetching Functions
+    // Fetches the authenticated user's favorite games.
     const getFavoriteGames = async () => {
-        // No need to check localStorage.token here, interceptor handles auth
         try {
-            const res = await api.get('/games/my-favorites'); // Use 'api' instance
+            const res = await api.get('/games/my-favorites');
             setFavoriteGames(res.data);
-            console.log("Fetched favorite games:", res.data);
+            console.log('Fetched favorite games:', res.data);
         } catch (err) {
-            // Only log error, don't set global error state for optional fetches
-            console.error("Error fetching favorite games:", err);
-            // If it's a 401, the interceptor might handle logout or token removal
-            if (err.response && err.response.status === 401) {
-                // Handle unauthorized access specifically if needed, e.g., logout
-                // logout(); // Or let loadUser handle it
+            console.error('Error fetching favorite games:', err);
+            if (err.response?.status === 401) {
+                console.warn('Unauthorized - logging out user.');
+                logout();
             }
         }
     };
 
-    // Helper function to get posts
+    // Fetches all posts for the community section.
     const getPosts = async () => {
         try {
-            const res = await api.get('/posts'); // Use 'api' instance
+            const res = await api.get('/posts');
             setPosts(res.data);
-            console.log("Fetched posts:", res.data);
+            console.log('Fetched posts:', res.data);
         } catch (err) {
-            // Only log error, don't set global error state for optional fetches
-            console.error("Error fetching posts:", err);
+            console.error('Error fetching posts:', err);
+            if (err.response?.status === 401) {
+                console.warn('Unauthorized - logging out user.');
+                logout();
+            }
         }
     };
 
-    // Load user data on initial app load
+    // Load User on Mount
     useEffect(() => {
-        // --- FIX: Corrected syntax error ---
         const loadUser = async () => {
-            setLoading(true); // Start loading check
-            const token = localStorage.getItem('token'); // Check token existence
+            setLoading(true);
+            const token = localStorage.getItem('token');
 
-            if (token) {
-                // No need to call setAuthToken/setupAuthToken here, interceptor handles it.
-            } else {
-                // No token found, user is not logged in
+            if (!token) {
+                // No token found → clear state
                 setIsAuthenticated(false);
                 setUser(null);
                 setFavoriteGames([]);
                 setPosts([]);
-                setLoading(false); // Finish loading check
+                setLoading(false);
                 return;
             }
 
             try {
-                // Attempt to fetch user data using the token (interceptor adds it)
                 const res = await api.get('/auth');
                 setUser(res.data);
                 setIsAuthenticated(true);
-                // Fetch dependent data ONLY after confirming user authentication
-                await Promise.all([getFavoriteGames(), getPosts()]); // Fetch concurrently
+                await Promise.all([getFavoriteGames(), getPosts()]);
             } catch (err) {
-                console.error("Load User Error:", err);
-                // If fetching user fails (e.g., invalid token), log out fully
+                console.error('Load User Error:', err);
                 localStorage.removeItem('token');
-                // setupAuthToken(null); // Ensure header is cleared if needed
                 setIsAuthenticated(false);
                 setUser(null);
                 setFavoriteGames([]);
                 setPosts([]);
-                // Optionally set an error message if needed
-                // setError("Session expired. Please log in again.");
             } finally {
-                // *** Ensure loading is set to false AFTER all attempts ***
                 setLoading(false);
             }
         };
 
         loadUser();
-    }, []); // Empty dependency array means run once on mount
+    }, []);
 
-    // Register User
+    // Authentication Functions
+    // Registers a new user.
     const register = async (formData) => {
-        setError(null); // Clear previous errors
+        setError(null);
         try {
-            const res = await api.post('/auth/register', formData); // Use 'api' instance
-            setupAuthToken(res.data.token); // Store token using setup function
+            const res = await api.post('/auth/register', formData);
+            setupAuthToken(res.data.token);
 
-            // Fetch user data immediately after successful registration
             const userRes = await api.get('/auth');
             setUser(userRes.data);
             setIsAuthenticated(true);
-            setFavoriteGames([]); // Reset favorites for new user
-            await getPosts(); // Fetch posts
-            navigate('/'); // Redirect to home
+            setFavoriteGames([]);
+            await getPosts();
+
+            navigate('/');
         } catch (err) {
-            console.error("Registration failed:", err);
-            setError(getErrorMessage(err)); // Set error message
-            setupAuthToken(null); // Clear token on failure
+            console.error('Registration failed:', err);
+            setError(getErrorMessage(err));
+            setupAuthToken(null);
             setIsAuthenticated(false);
-            // Re-throw the error so the component can catch it (e.g., for 'isSubmitting')
             throw err;
         }
-        // No setLoading needed here as main loading is for initial load
     };
 
-    // Login User
+    // Logs in an existing user.
     const login = async (formData) => {
-        setError(null); // Clear previous errors
+        setError(null);
         try {
-            const res = await api.post('/auth/login', formData); // Use 'api' instance
-            setupAuthToken(res.data.token); // Store token using setup function
+            const res = await api.post('/auth/login', formData);
+            setupAuthToken(res.data.token);
 
-            // Fetch user data immediately after successful login
             const userRes = await api.get('/auth');
             setUser(userRes.data);
             setIsAuthenticated(true);
 
-            // Fetch dependent data after login confirmation
-            await Promise.all([getFavoriteGames(), getPosts()]); // Fetch concurrently
-
-            console.log("Login successful, navigating to /");
-            navigate('/'); // Redirect to home
-
+            await Promise.all([getFavoriteGames(), getPosts()]);
+            console.log('Login successful, navigating to /');
+            navigate('/');
         } catch (err) {
-            console.error("Login failed:", err);
-            setError(getErrorMessage(err)); // Set error message
-            setupAuthToken(null); // Clear token on failure
+            console.error('Login failed:', err);
+            setError(getErrorMessage(err));
+            setupAuthToken(null);
             setIsAuthenticated(false);
-            // Re-throw the error so the component can catch it (e.g., for 'isSubmitting')
             throw err;
         }
-        // No setLoading needed here
     };
 
-    // Logout User
+    // Logs out the current user and clears all stored data.
     const logout = () => {
-        setupAuthToken(null); // Clear token using setup function
+        setupAuthToken(null);
         setUser(null);
         setIsAuthenticated(false);
-        setFavoriteGames([]); // Clear states
+        setFavoriteGames([]);
         setPosts([]);
-        navigate('/login'); // Redirect to login page
+        navigate('/login');
     };
 
-    // Clear errors manually if needed
-    const clearError = () => {
-        setError(null);
-    };
+    // Clears the error state manually.
+    const clearError = () => setError(null);
 
-    // Add a favorite game
+    // Favorite Games 
+    // Adds a game to the user's favorites.
     const addFavoriteGame = async (gameData) => {
-        if (!isAuthenticated) return; // Prevent action if not logged in
-        setError(null); // Clear previous errors
+        if (!isAuthenticated) return;
+        setError(null);
         try {
-            const res = await api.put('/games/add', gameData); // Use 'api' instance
-            setFavoriteGames(res.data.favoriteGames); // Update state from backend response
+            const res = await api.put('/games/add', gameData);
+            setFavoriteGames(res.data.favoriteGames);
         } catch (err) {
-            console.error("Error adding favorite:", err);
-            setError(getErrorMessage(err)); // Set error message
+            console.error('Error adding favorite:', err);
+            setError(getErrorMessage(err));
         }
     };
 
-    // Remove a favorite game
+    // Removes a game from the user's favorites.
     const removeFavoriteGame = async (gameId) => {
-        if (!isAuthenticated) return; // Prevent action if not logged in
-        setError(null); // Clear previous errors
+        if (!isAuthenticated) return;
+        setError(null);
         try {
-            const res = await api.put('/games/remove', { gameId }); // Use 'api' instance
-            setFavoriteGames(res.data.favoriteGames); // Update state from backend response
+            const res = await api.put('/games/remove', { gameId });
+            setFavoriteGames(res.data.favoriteGames);
         } catch (err) {
-            console.error("Error removing favorite:", err);
-            setError(getErrorMessage(err)); // Set error message
+            console.error('Error removing favorite:', err);
+            setError(getErrorMessage(err));
         }
     };
 
-    // Create a new post
+    // Post Management
+    // Creates a new user post
     const createPost = async (postContent) => {
-        if (!isAuthenticated) return false; // Prevent action if not logged in
-        setError(null); // Clear previous errors
+        if (!isAuthenticated) return false;
+        setError(null);
         try {
-            const res = await api.post('/posts', { content: postContent }); // Use 'api' instance
-            // Add the newly created post (returned from backend) to the start of the state
-            setPosts(prevPosts => [res.data, ...prevPosts]);
-            return true; // Indicate success
+            const res = await api.post('/posts', { content: postContent });
+            setPosts((prev) => [res.data, ...prev]);
+            return true;
         } catch (err) {
-            console.error("Error creating post:", err);
-            setError(getErrorMessage(err)); // Set error message
-            return false; // Indicate failure
+            console.error('Error creating post:', err);
+            setError(getErrorMessage(err));
+            return false;
         }
     };
 
-    // --- Provide The Values ---
-    // Make sure all functions and state variables needed by components are included
+    // Context Value
     const value = {
         user,
         isAuthenticated,
-        loading, // This indicates the initial auth check status
+        loading,
         error,
         register,
         login,
@@ -247,12 +233,13 @@ export function AuthProvider({ children }) {
         removeFavoriteGame,
         posts,
         createPost,
-        getPosts // Expose getPosts if components need to trigger manual refresh
+        getPosts,
     };
 
+    // Render Provider
     return (
         <AuthContext.Provider value={value}>
-            {/* Render children only when the initial auth check is complete */}
+            {/* Render children only after authentication state is checked */}
             {!loading && children}
         </AuthContext.Provider>
     );

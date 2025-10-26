@@ -1,50 +1,53 @@
-import axios from 'axios';
-import setAuthToken from './setAuthToken'; // Import the utility
+/**
+ * Axios instances for the A.R.C. application:
+ * 1. `api` for backend requests
+ * 2. `rawgApi` for RAWG API requests
+ *
+ * Includes automatic token handling for backend requests.
+ */
 
-// --- Axios Instance for Your Backend ---
+import axios from 'axios';
+
+//  Axios Instance for Your Backend 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // Your backend base URL
+    baseURL: 'http://localhost:5000/api', // Backend base URL
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// --- Axios Instance for RAWG API ---
+//  Axios Instance for RAWG API 
 const rawgApi = axios.create({
-    baseURL: 'https://api.rawg.io/api', // RAWG base URL
+    baseURL: 'https://api.rawg.io/api', // RAWG API base URL
     params: {
-        key: process.env.REACT_APP_RAWG_API_KEY, // Automatically add API key to all RAWG requests
+        key: process.env.REACT_APP_RAWG_API_KEY, // Automatically attach API key
     },
 });
 
-// --- Interceptor to add token ONLY to requests going to YOUR backend ---
-// This automatically adds the x-auth-token header before sending requests via 'api' instance
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers['x-auth-token'] = token;
-    } else {
-        delete config.headers['x-auth-token']; // Ensure header is removed if no token
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
+// Interceptor to automatically attach the token from localStorage to all backend requests.
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['x-auth-token'] = token;
+        } else {
+            delete config.headers['x-auth-token']; // Remove if no token
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
-
-// --- Update setAuthToken (Optional but good practice) ---
-// We modify setAuthToken slightly to work better with the interceptor.
-// It will now just ensure the token is in localStorage, the interceptor handles the header.
+/**
+ * Setup authentication token in localStorage.
+ * Interceptor will automatically attach it to backend requests.
+ */
 const setupAuthToken = (token) => {
     if (token) {
         localStorage.setItem('token', token);
-        // The interceptor will pick it up from localStorage
     } else {
         localStorage.removeItem('token');
-        // Interceptor will see no token and remove the header
     }
 };
 
-
-export { api, rawgApi, setupAuthToken }; // Export the instances and the updated setup function
-// We no longer need to export the original setAuthToken
+export { api, rawgApi, setupAuthToken };
