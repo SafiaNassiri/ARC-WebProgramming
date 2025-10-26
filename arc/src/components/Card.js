@@ -1,16 +1,77 @@
 import React from 'react';
-import '../Styles/Card.css';
+import { useAuth } from '../contexts/AuthContext'; // Correct path assumed
+import '../Styles/Card.css'; // Adjust path if needed
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
-function Card({ title, description, imageUrl }) {
+function Card({ game }) {
+    // --- MOVED HOOK CALL TO THE TOP ---
+    // Get the data and functions BEFORE any conditional returns
+    const {
+        isAuthenticated,
+        addFavoriteGame,
+        removeFavoriteGame,
+        favoriteGames
+    } = useAuth();
 
-    const placeholderImage = "https://via.placeholder.com/400x225.png?text=A.R.C.";
-    const displayImage = imageUrl || placeholderImage;
+    // Now it's safe to have an early return if 'game' is missing
+    if (!game) {
+        return (
+            <div className="card">
+                <div className="card-content">
+                    <p className="card-description">Error: Game data missing.</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Check if this game is already in our favorites list
+    const isFavorite = favoriteGames.some(favGame => favGame.gameId === game.id?.toString());
+
+    // --- (Rest of the component remains the same) ---
+
+    const placeholderImage = "https://placehold.co/400x225/5c9d9f/FFFFFF?text=A.R.C.";
+    const displayImage = game.imageUrl || game.image || placeholderImage;
+    const title = game.title || game.name || "Untitled Game";
+    const description = game.description;
+
+    const handleFavoriteClick = () => {
+        if (!isAuthenticated) {
+            console.log("Please log in to favorite games.");
+            return;
+        }
+        if (!game.id) {
+            console.error("Cannot favorite game: Missing game ID.");
+            return;
+        }
+
+        if (isFavorite) {
+            removeFavoriteGame(game.id.toString());
+        } else {
+            addFavoriteGame({
+                gameId: game.id.toString(),
+                name: game.title || game.name || "Unknown Game",
+                image: game.imageUrl || game.image || placeholderImage
+            });
+        }
+    };
 
     return (
         <div className="card">
+            {isAuthenticated && (
+                <button
+                    className="favorite-btn"
+                    onClick={handleFavoriteClick}
+                    aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                    {isFavorite ? <FaHeart className="icon-filled" /> : <FaRegHeart className="icon-empty" />}
+                </button>
+            )}
+
             <div
                 className="card-image"
                 style={{ backgroundImage: `url(${displayImage})` }}
+                role="img"
+                aria-label={title}
             >
             </div>
             <div className="card-content">
@@ -22,3 +83,4 @@ function Card({ title, description, imageUrl }) {
 }
 
 export default Card;
+

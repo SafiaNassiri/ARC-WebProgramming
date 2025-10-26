@@ -1,82 +1,144 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import '../Styles/Navbar.css';
-import { FaHome, FaCompass, FaUsers } from 'react-icons/fa';
+import '../Styles/Navbar.css'; // Adjust path if needed
+// Import icons for links AND burger/close buttons
+import { FaHome, FaCompass, FaUsers, FaBars, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 
 function Navbar() {
-    const { isAuthenticated, user, loading, logout } = useAuth();
+    const { user, isAuthenticated, logout } = useAuth(); // Corrected: Get user, isAuthenticated, logout
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
     const navigate = useNavigate();
 
-    // Get the user's name
-    const displayName = user?.username || "Profile";
+    // Use user's actual username if available
+    const displayName = user ? user.username : 'Profile'; // Use user.username
 
-    const onLogout = () => {
-        logout();
-        navigate('/');
+    const handleMobileMenuToggle = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const authLinks = (
-        // This is what shows if you ARE logged in
-        <div
-            className="navbar-user"
-            onMouseEnter={() => setIsDropdownOpen(true)}
-            onMouseLeave={() => setIsDropdownOpen(false)}
-        >
-            <button className="user-menu-button">
-                <span className="user-menu-name">{displayName}</span>
-                <div className="user-menu-avatar">
-                    {/* We can add profile pics later */}
-                </div>
-            </button>
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
 
-            {isDropdownOpen && (
-                <div className="user-dropdown">
-                    <Link to="/profile" className="dropdown-item">My Profile</Link>
-                    <Link to="/settings" className="dropdown-item">Settings</Link>
-                    {/* Add a Logout link */}
-                    <a href="#!" onClick={onLogout} className="dropdown-item">Logout</a>
-                </div>
-            )}
-        </div>
-    );
 
-    const guestLinks = (
-        // This is what shows if you are NOT logged in
-        <div className="navbar-auth-buttons">
+    // Combine Profile/Settings/Logout links for reuse
+    const profileLinks = (
+        <>
+            <Link to="/profile" className="dropdown-item" onClick={closeMobileMenu}>My Profile</Link>
+            <Link to="/settings" className="dropdown-item" onClick={closeMobileMenu}>Settings</Link>
             <button
-                className="navbar-login-btn"
-                onClick={() => navigate('/login')}
+                onClick={() => {
+                    logout();
+                    closeMobileMenu(); // Close mobile menu on logout
+                }}
+                className="dropdown-item dropdown-logout-btn" // Added class for specific styling
             >
-                Login
+                Logout
             </button>
-            <button
-                className="navbar-register-btn"
-                onClick={() => navigate('/register')}
-            >
-                Sign Up
-            </button>
-        </div>
+        </>
     );
 
     return (
         <nav className="navbar">
-            <Link to="/" className="navbar-logo-link">
+            <Link to="/" className="navbar-logo-link" onClick={closeMobileMenu}>
                 <div className="navbar-logo">
                     <span className="navbar-logo-main">A.R.C.</span>
                     <span className="navbar-logo-tagline">Archive. Record. Connect.</span>
                 </div>
             </Link>
 
-            <ul className="navbar-links">
+            {/* --- Desktop Links (Hidden on mobile) --- */}
+            <ul className="navbar-links desktop-links">
                 <li><NavLink to="/"><FaHome /> <span>Home</span></NavLink></li>
                 <li><NavLink to="/discover"><FaCompass /> <span>Discover</span></NavLink></li>
                 <li><NavLink to="/community"><FaUsers /> <span>Community</span></NavLink></li>
             </ul>
 
-            {/* The final logic: show links based on auth state */}
-            {!loading && (isAuthenticated ? authLinks : guestLinks)}
+            {/* --- Right Side: Auth Buttons or Profile Menu --- */}
+            <div className="navbar-auth-section">
+                {isAuthenticated ? (
+                    // --- Desktop Profile Menu ---
+                    <div
+                        className="navbar-user desktop-profile"
+                        onMouseEnter={() => setIsDropdownOpen(true)}
+                        onMouseLeave={() => setIsDropdownOpen(false)}
+                    >
+                        <button className="user-menu-button">
+                            <span className="user-menu-name">{displayName}</span>
+                            <div className="user-menu-avatar">
+                                {/* Later: Add real avatar */}
+                            </div>
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="user-dropdown">
+                                {profileLinks}
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    // --- Desktop Login/Sign Up Buttons ---
+                    <div className="navbar-action-buttons desktop-auth">
+                        <button
+                            className="navbar-login-btn"
+                            onClick={() => navigate('/login')}
+                        >
+                            Login
+                        </button>
+                        <button
+                            className="navbar-signup-btn"
+                            onClick={() => navigate('/register')}
+                        >
+                            Sign Up
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* --- Burger Menu Button (Mobile Only) --- */}
+            <button className="burger-menu-button" onClick={handleMobileMenuToggle}>
+                {isMobileMenuOpen ? <FaTimes /> : <FaBars />} {/* Toggle icon */}
+            </button>
+
+            {/* --- Mobile Menu Overlay --- */}
+            {isMobileMenuOpen && (
+                <div className="navbar-mobile-menu">
+                    {/* Mobile Links */}
+                    <ul className="navbar-links mobile-links-list">
+                        <li><NavLink to="/" onClick={closeMobileMenu}><FaHome /> <span>Home</span></NavLink></li>
+                        <li><NavLink to="/discover" onClick={closeMobileMenu}><FaCompass /> <span>Discover</span></NavLink></li>
+                        <li><NavLink to="/community" onClick={closeMobileMenu}><FaUsers /> <span>Community</span></NavLink></li>
+                    </ul>
+
+                    <hr className="mobile-menu-divider" />
+
+                    {/* Mobile Auth Section */}
+                    <div className="mobile-auth-section">
+                        {isAuthenticated ? (
+                            <div className="mobile-profile-menu">
+                                <div className="user-menu-name mobile-user-name">{displayName}</div>
+                                {profileLinks}
+                            </div>
+                        ) : (
+                            <div className="navbar-action-buttons mobile-auth-buttons">
+                                <button
+                                    className="navbar-login-btn"
+                                    onClick={() => { navigate('/login'); closeMobileMenu(); }}
+                                >
+                                    Login
+                                </button>
+                                <button
+                                    className="navbar-signup-btn"
+                                    onClick={() => { navigate('/register'); closeMobileMenu(); }}
+                                >
+                                    Sign Up
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </nav>
     );
 }

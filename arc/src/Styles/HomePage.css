@@ -1,28 +1,36 @@
 .home-layout {
     display: grid;
     grid-template-columns: 1fr 300px;
-    gap: 1.5rem;
+    /* Main feed and a 300px sidebar */
+    gap: 3rem;
+    /* Increased gap between columns */
     align-items: flex-start;
 }
 
 .home-feed {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2.5rem;
+    /* Increased gap between feed sections */
     overflow: hidden;
+    /* Keep this to contain GameRow */
 }
 
 .home-sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    /* Keep sidebar gap as is, or adjust if needed */
 }
 
+/* --- Welcome Box (Hero) --- */
 .welcome-box {
     background-color: var(--bg-secondary);
     border-radius: 8px;
     padding: 1.5rem 2rem;
     border-left: 5px solid var(--accent-secondary);
+    margin-bottom: 0.5rem;
+    /* Added small bottom margin */
 }
 
 .welcome-box h2 {
@@ -38,6 +46,24 @@
     font-size: 1rem;
 }
 
+/* --- Targeting Section Titles in the Feed --- */
+.home-feed h2 {
+    /* Add space above section titles like "Trending Games", "Hot Discussions" */
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    /* Increase space below title */
+}
+
+/* Make sure GameRow's internal title margin doesn't conflict badly */
+/* We can remove the top margin from GameRow's title specifically if needed */
+.home-feed .game-row .game-row-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    /* Keep GameRow title's bottom margin */
+}
+
+
+/* --- Reusable Sidebar Card --- */
 .sidebar-card {
     background-color: var(--bg-secondary);
     border-radius: 8px;
@@ -82,6 +108,7 @@
     color: var(--text-primary);
 }
 
+/* --- Specific styling for Friends List --- */
 .friend-item {
     display: flex;
     align-items: center;
@@ -104,10 +131,21 @@
 .friend-status {
     font-size: 0.7rem;
     color: #28a745;
+    /* Green */
 }
 
+
+/* --- Responsive adjustments --- */
 @media (max-width: 900px) {
     .home-layout {
         grid-template-columns: 1fr;
+        /* Stack columns */
+        gap: 2.5rem;
+        /* Adjust gap for stacked layout */
+    }
+
+    /* Optional: Adjust sidebar order or spacing when stacked */
+    .home-sidebar {
+        gap: 1.5rem;
     }
 }

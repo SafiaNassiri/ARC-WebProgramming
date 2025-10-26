@@ -1,5 +1,7 @@
 .game-row {
     margin-bottom: 2rem;
+    /* Make the section relative for arrow positioning */
+    position: relative;
 }
 
 .game-row-title {
@@ -9,19 +11,113 @@
     margin-bottom: 1rem;
 }
 
+/* NEW: Wrapper for scroll area + arrows */
+.game-row-wrapper {
+    position: relative;
+    /* Contains the absolute arrows */
+}
+
 .game-row-scroll {
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     gap: 1.5rem;
     padding-bottom: 1.5rem;
+    padding-left: 2px;
+    padding-right: 2px;
+    /* Ensure smooth scrolling behavior */
+    scroll-behavior: smooth;
+    /* Prevent scroll chaining on touch devices */
+    overscroll-behavior-x: contain;
 
+    /* --- Scrollbar Hiding --- */
     &::-webkit-scrollbar {
         display: none;
+        width: 0 !important;
+        height: 0 !important;
     }
 
     scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .game-row-item {
     flex: 0 0 280px;
+    overflow: hidden;
+}
+
+.game-row-item .card {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- NEW: Arrow Button Styles --- */
+.scroll-arrow {
+    position: absolute;
+    top: 50%;
+    /* Adjust translateY based on card image height (180px) and padding */
+    /* (180px / 2) = 90px. Center of the image area. */
+    transform: translateY(calc(-50% - 0.75rem));
+    /* Adjust offset if needed */
+    z-index: 10;
+    background-color: rgba(var(--text-primary-rgb, 53, 50, 76), 0.6);
+    /* Use text color with opacity */
+    color: var(--bg-primary);
+    /* Use background color for icon */
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, opacity 0.3s ease;
+    opacity: 0;
+    /* Initially hidden */
+    pointer-events: none;
+    /* Initially not clickable */
+}
+
+/* Show arrows on hover of the wrapper */
+.game-row-wrapper:hover .scroll-arrow {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.scroll-arrow:hover {
+    background-color: rgba(var(--text-primary-rgb, 53, 50, 76), 0.9);
+}
+
+.left-arrow {
+    left: 10px;
+    /* Position on the left */
+}
+
+.right-arrow {
+    right: 10px;
+    /* Position on the right */
+}
+
+/* Hide arrows on very small screens where touch scrolling is preferred */
+@media (max-width: 600px) {
+    .scroll-arrow {
+        display: none;
+    }
+
+    .game-row-scroll {
+        /* Add more padding if arrows are hidden */
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+
+:root {
+    --text-primary-rgb: 53, 50, 76;
+}
+
+[data-theme="dark"] {
+    --text-primary-rgb: 195, 202, 216;
 }
