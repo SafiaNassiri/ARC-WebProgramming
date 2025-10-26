@@ -1,4 +1,4 @@
-# 🎮 A.R.C. (Archive. Record. Connect.)
+# A.R.C. (Archive. Record. Connect.)
 ### *A Gamer's Social Hub*
 
 ![React](https://img.shields.io/badge/Frontend-React-blue?logo=react)
@@ -13,7 +13,7 @@ A web application built with the **MERN stack** designed for gamers to showcase 
 
 ---
 
-## 🧭 Table of Contents
+## Table of Contents
 1. [Overview](#-overview)
 2. [Features Implemented](#-features-implemented)
 3. [Technologies Used](#-technologies-used)
@@ -27,7 +27,7 @@ A web application built with the **MERN stack** designed for gamers to showcase 
 
 ---
 
-## 🧭 Overview
+## Overview
 
 **A.R.C.** provides a central platform for gamers to manage their digital gaming life.  
 Users can:
@@ -40,53 +40,53 @@ The app features **user authentication** and a dynamic, responsive interface bui
 
 ---
 
-## 🚀 Features Implemented
+## Features Implemented
 
-### 🔐 User Authentication
+### User Authentication
 - User registration (Username, Email, Password)
 - User login
 - **JWT-based** authentication for secure sessions
 - Password hashing using **bcrypt**
 
-### 🎮 Game Discovery (RAWG API Integration)
+### Game Discovery (RAWG API Integration)
 - Fetches and displays **Trending** and **Recommended** games on the Home and Discover pages.
 - Displays game details (image, title, rating) in card format.
 - Integrated with the **RAWG Video Games Database API**.
 
-### ❤️ Favorite Games
+### Favorite Games
 - Logged-in users can **add/remove** games from their favorites list.
 - Favorite status indicated with a heart icon.
 - Persistent storage in **MongoDB**.
 
-### 👤 Profile Page
+### Profile Page
 Displays the logged-in user's info with tabbed sections for:
 - **Game Library** – User’s saved favorite games  
 - **Achievements** – Static placeholder (future feature)  
 - **My Posts** – Posts created by the user  
 
-### 🗨️ Community Feed
+### Community Feed
 - Logged-in users can create text posts.
 - Displays a feed of all posts (sorted newest first).
 
-### 📱 Responsive Design
+### Responsive Design
 - Adaptive navbar with burger menu on small screens.
 - Optimized layout for mobile and tablet devices.
 
-### 🌗 Theme Toggle
+### Theme Toggle
 - **Light/Dark mode** available via settings.
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
-### 🖥️ Frontend
+### Frontend
 - **React** (with Hooks)
 - **React Router DOM** – Navigation
 - **Axios** – API requests
 - **CSS** (with CSS Variables for theming)
 - **React Icons**
 
-### ⚙️ Backend
+### Backend
 - **Node.js**
 - **Express.js**
 - **MongoDB Atlas**
@@ -96,12 +96,12 @@ Displays the logged-in user's info with tabbed sections for:
 - **dotenv** – Environment variables
 - **cors** – Cross-origin resource sharing
 
-### 🌐 APIs
+### APIs
 - **RAWG Video Games Database API** – Game discovery and details
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 A.R.C./
 ├── arc-frontend/ # React frontend application
@@ -158,7 +158,6 @@ Start the frontend development server:
 npm start
 ```
 The React app should open at http://localhost:3000.
-```
 
 ## Environment Variables
 # Backend (arc-backend/.env)
