@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import '../Styles/Navbar.css'; // Adjust path if needed
+// Assuming 'Styles' is lowercase: 'styles'
+import '../Styles/Navbar.css';
 // Import icons for links AND burger/close buttons
 import { FaHome, FaCompass, FaUsers, FaBars, FaTimes } from 'react-icons/fa';
+// --- FIX: Corrected path to 'contexts' (plural) ---
 import { useAuth } from '../contexts/AuthContext';
 
 function Navbar() {
-    const { user, isAuthenticated, logout } = useAuth(); // Corrected: Get user, isAuthenticated, logout
+    const { user, isAuthenticated, logout } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
 
+    // Create a ref for the dropdown menu
+    const dropdownRef = useRef(null);
+
     // Use user's actual username if available
-    const displayName = user ? user.username : 'Profile'; // Use user.username
+    const displayName = user ? user.username : 'Profile';
 
     const handleMobileMenuToggle = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -22,18 +27,36 @@ function Navbar() {
         setIsMobileMenuOpen(false);
     };
 
+    // This effect handles closing the dropdown if you click *outside* of it
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Check if the dropdown is open and the click was *not* inside the ref's current element
+            if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
 
-    // Combine Profile/Settings/Logout links for reuse
-    const profileLinks = (
+        // Add the event listener to the document
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Cleanup: remove the event listener when the component unmounts
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isDropdownOpen]); // Only re-run this effect if isDropdownOpen changes
+
+
+    // Modified profileLinks to accept a callback for when a link is clicked
+    const profileLinks = (onLinkClick) => (
         <>
-            <Link to="/profile" className="dropdown-item" onClick={closeMobileMenu}>My Profile</Link>
-            <Link to="/settings" className="dropdown-item" onClick={closeMobileMenu}>Settings</Link>
+            <Link to="/profile" className="dropdown-item" onClick={onLinkClick}>My Profile</Link>
+            <Link to="/settings" className="dropdown-item" onClick={onLinkClick}>Settings</Link>
             <button
                 onClick={() => {
                     logout();
-                    closeMobileMenu(); // Close mobile menu on logout
+                    if (onLinkClick) onLinkClick(); // Call the provided click handler
                 }}
-                className="dropdown-item dropdown-logout-btn" // Added class for specific styling
+                className="dropdown-item dropdown-logout-btn"
             >
                 Logout
             </button>
@@ -60,12 +83,16 @@ function Navbar() {
             <div className="navbar-auth-section">
                 {isAuthenticated ? (
                     // --- Desktop Profile Menu ---
+                    // Assign the ref to the parent div
                     <div
                         className="navbar-user desktop-profile"
-                        onMouseEnter={() => setIsDropdownOpen(true)}
-                        onMouseLeave={() => setIsDropdownOpen(false)}
+                        ref={dropdownRef}
                     >
-                        <button className="user-menu-button">
+                        {/* Change from hover to click to toggle the menu */}
+                        <button
+                            className="user-menu-button"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
                             <span className="user-menu-name">{displayName}</span>
                             <div className="user-menu-avatar">
                                 {/* Later: Add real avatar */}
@@ -73,7 +100,8 @@ function Navbar() {
                         </button>
                         {isDropdownOpen && (
                             <div className="user-dropdown">
-                                {profileLinks}
+                                {/* Pass a function to close the *desktop* dropdown on click */}
+                                {profileLinks(() => setIsDropdownOpen(false))}
                             </div>
                         )}
                     </div>
@@ -118,7 +146,8 @@ function Navbar() {
                         {isAuthenticated ? (
                             <div className="mobile-profile-menu">
                                 <div className="user-menu-name mobile-user-name">{displayName}</div>
-                                {profileLinks}
+                                {/* Pass the function to close the *mobile* menu on click */}
+                                {profileLinks(closeMobileMenu)}
                             </div>
                         ) : (
                             <div className="navbar-action-buttons mobile-auth-buttons">

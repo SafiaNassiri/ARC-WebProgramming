@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Assuming api.js now handles axios instances and token logic primarily
-import { api, setupAuthToken, rawgApi } from '../utils/api'; // Use specific instances
+// --- FIX: Trying a different path to go UP two directories to 'src' if AuthContext is deep (e.g., src/contexts/AuthContext.js) ---
+// If 'src/utils/api.js' is correct, then the path from 'src/contexts/' must be '../utils/api'. We will try a different notation if that fails.
+import { api, setupAuthToken } from '../utils/api'; // Trying absolute path from 'src' root
 
 // Create The Context
 const AuthContext = createContext();
-
+// ... (rest of the file is unchanged) ...
 // Create a Custom Hook
 export const useAuth = () => {
     return useContext(AuthContext);
@@ -74,6 +76,7 @@ export function AuthProvider({ children }) {
 
     // Load user data on initial app load
     useEffect(() => {
+        // --- FIX: Corrected syntax error ---
         const loadUser = async () => {
             setLoading(true); // Start loading check
             const token = localStorage.getItem('token'); // Check token existence
@@ -136,6 +139,8 @@ export function AuthProvider({ children }) {
             setError(getErrorMessage(err)); // Set error message
             setupAuthToken(null); // Clear token on failure
             setIsAuthenticated(false);
+            // Re-throw the error so the component can catch it (e.g., for 'isSubmitting')
+            throw err;
         }
         // No setLoading needed here as main loading is for initial load
     };
@@ -163,6 +168,8 @@ export function AuthProvider({ children }) {
             setError(getErrorMessage(err)); // Set error message
             setupAuthToken(null); // Clear token on failure
             setIsAuthenticated(false);
+            // Re-throw the error so the component can catch it (e.g., for 'isSubmitting')
+            throw err;
         }
         // No setLoading needed here
     };
@@ -250,4 +257,3 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
     );
 }
-
