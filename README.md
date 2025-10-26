@@ -1,70 +1,190 @@
-# Getting Started with Create React App
+# 🎮 A.R.C. (Archive. Record. Connect.)
+### *A Gamer's Social Hub*
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![React](https://img.shields.io/badge/Frontend-React-blue?logo=react)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-green?logo=node.js)
+![Express](https://img.shields.io/badge/Framework-Express-lightgrey?logo=express)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
+![RAWG API](https://img.shields.io/badge/API-RAWG.io-orange)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
-## Available Scripts
+A web application built with the **MERN stack** designed for gamers to showcase their gaming identity, track favorite games, discover new titles, and connect with a community.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🧭 Table of Contents
+1. [Overview](#-overview)
+2. [Features Implemented](#-features-implemented)
+3. [Technologies Used](#-technologies-used)
+4. [Project Structure](#-project-structure)
+5. [Setup and Installation](#️-setup-and-installation)
+6. [Environment Variables](#-environment-variables)
+7. [Screenshots](#️-screenshots-optional)
+8. [Future Features](#-future-features)
+9. [License](#-license)
+10. [Author](#-author)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧭 Overview
 
-### `npm test`
+**A.R.C.** provides a central platform for gamers to manage their digital gaming life.  
+Users can:
+- Create personalized profiles  
+- Browse games using the **RAWG API**  
+- Mark and save their favorite games  
+- Interact with a community feed by creating and viewing posts  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The app features **user authentication** and a dynamic, responsive interface built with **React**.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Features Implemented
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🔐 User Authentication
+- User registration (Username, Email, Password)
+- User login
+- **JWT-based** authentication for secure sessions
+- Password hashing using **bcrypt**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🎮 Game Discovery (RAWG API Integration)
+- Fetches and displays **Trending** and **Recommended** games on the Home and Discover pages.
+- Displays game details (image, title, rating) in card format.
+- Integrated with the **RAWG Video Games Database API**.
 
-### `npm run eject`
+### ❤️ Favorite Games
+- Logged-in users can **add/remove** games from their favorites list.
+- Favorite status indicated with a heart icon.
+- Persistent storage in **MongoDB**.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 👤 Profile Page
+Displays the logged-in user's info with tabbed sections for:
+- **Game Library** – User’s saved favorite games  
+- **Achievements** – Static placeholder (future feature)  
+- **My Posts** – Posts created by the user  
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🗨️ Community Feed
+- Logged-in users can create text posts.
+- Displays a feed of all posts (sorted newest first).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 📱 Responsive Design
+- Adaptive navbar with burger menu on small screens.
+- Optimized layout for mobile and tablet devices.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🌗 Theme Toggle
+- **Light/Dark mode** available via settings.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🛠️ Technologies Used
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 🖥️ Frontend
+- **React** (with Hooks)
+- **React Router DOM** – Navigation
+- **Axios** – API requests
+- **CSS** (with CSS Variables for theming)
+- **React Icons**
 
-### Code Splitting
+### ⚙️ Backend
+- **Node.js**
+- **Express.js**
+- **MongoDB Atlas**
+- **Mongoose**
+- **bcryptjs** – Password hashing
+- **jsonwebtoken (JWT)** – Authentication
+- **dotenv** – Environment variables
+- **cors** – Cross-origin resource sharing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 🌐 APIs
+- **RAWG Video Games Database API** – Game discovery and details
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 📂 Project Structure
 
-### Making a Progressive Web App
+A.R.C./
+├── arc-frontend/ # React frontend application
+└── arc-backend/ # Node.js/Express backend API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Setup and Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Prerequisites
+- Node.js and npm (or yarn)
+- MongoDB Atlas account and connection string
+- RAWG API Key → [https://rawg.io/apidocs](https://rawg.io/apidocs)
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Backend Setup
 
-### `npm run build` fails to minify
+```bash
+# Navigate to backend directory
+cd arc-backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Install dependencies
+npm install
+```
+Create a .env file inside arc-backend/ with:
+```bash
+MONGO_URI=YOUR_MONGODB_ATLAS_CONNECTION_STRING
+JWT_SECRET=YOUR_CHOSEN_JWT_SECRET_STRING
+PORT=5000  # optional
+```
+Then start the backend:
+```bash
+npm run dev
+```
+The server should start at http://localhost:5000 and connect to MongoDB.
+
+## Frontend Setup
+``` bash
+# Navigate to frontend directory
+cd arc-frontend
+# or cd arc
+```
+Install dependencies:
+```bash
+npm install
+```
+Create a .env file inside arc-frontend/ with:
+```bash
+REACT_APP_RAWG_API_KEY=YOUR_RAWG_API_KEY
+```
+Start the frontend development server:
+```bash
+npm start
+```
+The React app should open at http://localhost:3000.
+```
+
+## Environment Variables
+# Backend (arc-backend/.env)
+| Variable     | Description                           |
+| ------------ | ------------------------------------- |
+| `MONGO_URI`  | MongoDB Atlas connection string       |
+| `JWT_SECRET` | Secret key for JWT authentication     |
+| `PORT`       | Optional backend port (default: 5000) |
+
+# Frontend (arc-frontend/.env)
+| Variable                 | Description                         |
+| ------------------------ | ----------------------------------- |
+| `REACT_APP_RAWG_API_KEY` | RAWG API key for fetching game data |
+
+⚠️ Restart your servers after editing .env files.
+
+## Future Features
+
+- Dynamic Achievements fetching (API integration)
+- User profile editing (bio, avatar)
+- Friends/Follow system
+- Commenting and liking posts
+- Improved UI/UX with better loading/error states
+- Platform connection (Steam, Xbox, etc.)
+
+## Author
+
+A.R.C. – Archive. Record. Connect.
+Developed with ❤️ by Safia Nassiri
