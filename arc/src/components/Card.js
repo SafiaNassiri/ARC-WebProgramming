@@ -56,7 +56,6 @@ function Card({ game }) {
           className="game-card-image"
         />
 
-        {/* Remove (X) Button */}
         <button
           className="game-card-remove-btn"
           onClick={handleRemove}
@@ -72,7 +71,6 @@ function Card({ game }) {
           {description || "No description available"}
         </p>
 
-        {/* Add to Favorite Heart */}
         {!isFavorited && (
           <button
             className="game-card-favorite-btn"
