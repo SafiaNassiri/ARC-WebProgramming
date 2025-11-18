@@ -1,75 +1,83 @@
-/** 
+/**
  * Project: A.R.C. Web Application
  * Student: Safia Nassiri
  * Date: October 2025
-*/
+ */
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authMiddleware = require('../middleware/auth');
-const User = require('../models/User');
+const authMiddleware = require("../middleware/auth");
+const User = require("../models/User");
 
-router.get('/favorites', authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ msg: 'User not found' });
+router.get("/favorites", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
 
-        res.json(user.favoriteGames);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
+    res.json(user.favoriteGames);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
-router.put('/favorite', authMiddleware, async (req, res) => {
-    const { gameId, name, imageUrl, rating } = req.body;
+router.put("/favorite", authMiddleware, async (req, res) => {
+  const { gameId, name, imageUrl, rating } = req.body;
 
-    if (!gameId || !name) {
-        return res.status(400).json({ msg: 'Game ID and Name are required' });
+  if (!gameId || !name) {
+    return res.status(400).json({ msg: "Game ID and Name are required" });
+  }
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    // Prevent duplicates by checking if gameId already exists
+    const existingIndex = user.favoriteGames.findIndex(
+      (game) => game.gameId === gameId
+    );
+
+    if (existingIndex !== -1) {
+      // Optional: update info if needed, otherwise just return current list
+      return res.status(400).json({ msg: "Game already in favorites" });
     }
 
     const newFavorite = {
-        gameId,
-        name,
-        imageUrl: imageUrl || '',
-        rating: rating || 0,
+      gameId,
+      name,
+      imageUrl: imageUrl || "",
+      rating: rating || 0,
     };
 
-    try {
-        const user = await User.findById(req.user.id);
+    // Add to favorites
+    user.favoriteGames.unshift(newFavorite);
+    await user.save();
 
-        const isAlreadyFavorited = user.favoriteGames.some(
-            (game) => game.gameId === gameId
-        );
-        if (isAlreadyFavorited) {
-            return res.status(400).json({ msg: 'Game already in favorites' });
-        }
-
-        user.favoriteGames.unshift(newFavorite);
-        await user.save();
-
-        res.json(user.favoriteGames);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
+    res.json(user.favoriteGames);
+  } catch (err) {
+    console.error("Error inside /favorite route:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
-router.delete('/favorite/:gameId', authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        const gameIdToRemove = req.params.gameId;
+router.delete("/favorite/:gameId", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
 
-        user.favoriteGames = user.favoriteGames.filter(
-            (game) => game.gameId !== gameIdToRemove
-        );
+    const gameIdToRemove = req.params.gameId;
 
-        await user.save();
-        res.json(user.favoriteGames);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
+    // Remove the game with the matching gameId
+    user.favoriteGames = user.favoriteGames.filter(
+      (game) => game.gameId !== gameIdToRemove
+    );
+
+    await user.save();
+    res.json(user.favoriteGames);
+  } catch (err) {
+    console.error("Error removing favorite:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
 module.exports = router;

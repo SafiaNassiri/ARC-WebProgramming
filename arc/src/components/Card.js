@@ -1,63 +1,96 @@
-/**
- * Project: A.R.C. Web Application
- * Student: Safia Nassiri
- * Date: October 2025
- * Displays a single game card, typically used in carousels or grids.
- * It shows the game's image, title, and a brief description (like its rating).
- *
- * Props:
- * - game: An object containing game details (id, title, description, imageUrl)
- */
-
-import React from 'react';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { useAuth } from '../contexts/AuthContext';
-import '../Styles/Card.css';
+import React, { useState } from "react";
+import { FaRegHeart, FaTimes } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
+import "../Styles/Card.css";
 
 function Card({ game }) {
-    // Destructure game properties
-    const { id, title, description, imageUrl } = game;
-    const { favoriteGames, addFavoriteGame, removeFavoriteGame } = useAuth();
-    const isFavorited = favoriteGames.some(favGame => favGame.gameId === id);
-    const handleToggleFavorite = () => {
-        if (isFavorited) {
-            removeFavoriteGame(id);
-        } else {
-            addFavoriteGame({ 
-                gameId: id, 
-                title: title, 
-                imageUrl: imageUrl, 
-                description: description 
-            });
-        }
-    };
+  const { id, _id, title, name, description, imageUrl } = game;
+  const gameId = game.gameId || id || _id; // ensure matches favoriteGames
+  const { favoriteGames, addFavoriteGame, removeFavoriteGame } = useAuth();
 
-    // Use a placeholder if the game has no background image
-    const displayImage = imageUrl || 'https.via.placeholder.com/400x300?text=No+Image';
-    return (
-        <article className="game-card" key={id}>
-            <div className="game-card-image-container">
-                <img
-                    src={displayImage}
-                    alt={title || 'Game poster'}
-                    className="game-card-image"
-                />
-            </div>
-            <div className="game-card-content">
-                <h3 className="game-card-title">{title || 'Game Title'}</h3>
-                <p className="game-card-description">{description || 'No rating available'}</p>
+  const [tooltipMessage, setTooltipMessage] = useState("");
+  const [showTooltipFlag, setShowTooltipFlag] = useState(false);
 
-                <button
-                    className="game-card-favorite-btn"
-                    onClick={handleToggleFavorite}
-                    aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-                >
-                    {isFavorited ? <FaHeart /> : <FaRegHeart />}
-                </button>
+  const isFavorited = favoriteGames.some(
+    (favGame) => (favGame.gameId || favGame.id) === gameId
+  );
 
-            </div>
-        </article>
-    );
+  const displayTitle = title || name || "Game Title";
+
+  const showTooltip = (msg) => {
+    setTooltipMessage(msg);
+    setShowTooltipFlag(true);
+    setTimeout(() => setShowTooltipFlag(false), 2500);
+  };
+
+  // Add to favorites
+  const handleFavorite = async () => {
+    if (!isFavorited) {
+      try {
+        await addFavoriteGame(game);
+        showTooltip("Added to favorites!");
+      } catch (err) {
+        console.error(err);
+        showTooltip("Failed to add favorite!");
+      }
+    }
+  };
+
+  // Remove from favorites
+  const handleRemove = async () => {
+    try {
+      await removeFavoriteGame(gameId);
+      showTooltip("Removed from favorites!");
+    } catch (err) {
+      console.error(err);
+      showTooltip("Failed to remove favorite!");
+    }
+  };
+
+  return (
+    <article className="game-card" key={gameId}>
+      <div className="game-card-image-container">
+        <img
+          src={imageUrl || "https://via.placeholder.com/400x300?text=No+Image"}
+          alt={displayTitle}
+          className="game-card-image"
+        />
+
+        {/* Remove (X) Button */}
+        <button
+          className="game-card-remove-btn"
+          onClick={handleRemove}
+          aria-label="Remove from favorites"
+        >
+          <FaTimes color="red" />
+        </button>
+      </div>
+
+      <div className="game-card-content">
+        <h3 className="game-card-title">{displayTitle}</h3>
+        <p className="game-card-description">
+          {description || "No description available"}
+        </p>
+
+        {/* Add to Favorite Heart */}
+        {!isFavorited && (
+          <button
+            className="game-card-favorite-btn"
+            onClick={handleFavorite}
+            aria-label="Add to favorites"
+          >
+            <FaRegHeart />
+          </button>
+        )}
+
+        {tooltipMessage && (
+          <div className={`tooltip ${showTooltipFlag ? "show" : ""}`}>
+            {tooltipMessage}
+          </div>
+        )}
+      </div>
+    </article>
+  );
 }
 
 export default Card;

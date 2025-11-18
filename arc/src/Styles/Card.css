@@ -1,58 +1,126 @@
+/* ========================
+   Game Card Container
+   ======================== */
 .game-card {
-    background-color: var(--background-secondary);
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 8px;
-    width: 280px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease-in-out;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 8px;
+  width: 280px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  position: relative; /* for tooltip & buttons */
 }
 
 .game-card:hover {
-    transform: scale(1.03);
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* ========================
+   Image Container & Image
+   ======================== */
 .game-card-image-container {
-    width: 100%;
-    height: 160px;
-    overflow: hidden;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--bg-tertiary);
+  position: relative; /* for absolute buttons */
 }
 
 .game-card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease-in-out;
+  pointer-events: auto; /* ensures buttons above are clickable */
 }
 
+.game-card:hover .game-card-image {
+  transform: scale(1.05);
+}
+
+/* ========================
+   Content
+   ======================== */
 .game-card-content {
-    padding: 16px;
-    position: relative;
+  padding: 16px;
+  position: relative;
 }
 
 .game-card-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .game-card-description {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 8px;
 }
 
+/* ========================
+   Buttons
+   ======================== */
+.game-card-remove-btn,
 .game-card-favorite-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: var(--accent-primary);
-    font-size: 1.25rem;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.1s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Remove (X) button - top right */
+.game-card-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* Heart button - bottom right */
+.game-card-favorite-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 1.4rem;
+}
+
+.game-card-favorite-btn:hover {
+  transform: scale(1.2);
+  color: var(--accent-secondary);
+}
+
+/* ========================
+   Tooltip
+   ======================== */
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  margin-bottom: 8px;
+  background-color: var(--accent-secondary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+}
+
+.tooltip.show {
+  opacity: 0.95;
+  transform: translateX(-50%) translateY(-4px);
 }

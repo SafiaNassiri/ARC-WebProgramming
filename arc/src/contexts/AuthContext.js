@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
   // Fetches the authenticated user's favorite games
   const getFavoriteGames = useCallback(async () => {
     try {
-      const res = await api.get("/games/my-favorites");
+      const res = await api.get("/games/favorites");
       setFavoriteGames(res.data);
       console.log("Fetched favorite games:", res.data);
     } catch (err) {
@@ -176,25 +176,68 @@ export function AuthProvider({ children }) {
   // Clears the error manually
   const clearError = () => setError(null);
 
-  // Favorite Games Management
-  const addFavoriteGame = async (gameData) => {
+  // Toggle favorite game
+  const toggleFavoriteGame = async (game) => {
+    if (!isAuthenticated) return;
+
+    const gamePayload = {
+      gameId: game.id,
+      name: game.title,
+      imageUrl: game.imageUrl,
+      rating: game.rating || 0,
+    };
+
+    const isFavorited = favoriteGames.some(
+      (g) => g.gameId === gamePayload.gameId
+    );
+
+    try {
+      let res;
+      if (isFavorited) {
+        res = await api.delete(`/games/favorite/${gamePayload.gameId}`);
+      } else {
+        res = await api.put("/games/favorite", gamePayload);
+      }
+
+      setFavoriteGames(res.data);
+    } catch (err) {
+      console.error("Error toggling favorite:", err);
+      setError(getErrorMessage(err));
+    }
+  };
+
+  // Add a game to favorites
+  const addFavoriteGame = async (game) => {
     if (!isAuthenticated) return;
     setError(null);
+
+    // Make sure payload matches backend
+    const payload = {
+      gameId: game.id, // not game.gameId
+      name: game.title,
+      imageUrl: game.imageUrl,
+      rating: game.rating || 0,
+    };
+
     try {
-      const res = await api.put("/games/add", gameData);
-      setFavoriteGames(res.data.favoriteGames);
+      const res = await api.put("/games/favorite", payload);
+      setFavoriteGames(res.data);
+      console.log("Updated favoriteGames:", res.data);
     } catch (err) {
       console.error("Error adding favorite:", err);
       setError(getErrorMessage(err));
     }
   };
 
+  // Remove a game from favorites
   const removeFavoriteGame = async (gameId) => {
     if (!isAuthenticated) return;
     setError(null);
+
     try {
-      const res = await api.put("/games/remove", { gameId });
-      setFavoriteGames(res.data.favoriteGames);
+      await api.delete(`/games/favorite/${gameId}`);
+      // Remove immediately from state
+      setFavoriteGames((prev) => prev.filter((g) => g.gameId !== gameId));
     } catch (err) {
       console.error("Error removing favorite:", err);
       setError(getErrorMessage(err));
@@ -232,6 +275,7 @@ export function AuthProvider({ children }) {
     posts,
     createPost,
     getPosts,
+    toggleFavoriteGame,
   };
 
   // Render Provider
