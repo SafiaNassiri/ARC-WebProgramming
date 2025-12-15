@@ -26,7 +26,17 @@ function PostCard({
 
   // Get username - handle both username and name fields
   const getUsername = (user) => {
-    return user?.username || user?.name || "Unknown User";
+    if (!user) {
+      console.warn("No user object provided");
+      return "Unknown User";
+    }
+    if (typeof user === "string") {
+      console.warn("User is a string (unpopulated):", user);
+      return "Unknown User";
+    }
+    const username = user.username || user.name || user.email?.split("@")[0];
+    console.log("Getting username for user:", user, "-> result:", username);
+    return username || "Unknown User";
   };
 
   // Check if current user has liked this post
@@ -122,9 +132,14 @@ function PostCard({
 
         <div className="post-card-author-info">
           <span className="post-card-author">{getUsername(post.user)}</span>
-          <time className="post-card-timestamp" dateTime={post.date}>
-            {formatTimestamp(post.date)}
-          </time>
+          <div className="post-card-meta">
+            {post.forum && (
+              <span className="post-forum-tag"># {post.forum}</span>
+            )}
+            <time className="post-card-timestamp" dateTime={post.date}>
+              {formatTimestamp(post.date)}
+            </time>
+          </div>
         </div>
 
         {isOwner && (

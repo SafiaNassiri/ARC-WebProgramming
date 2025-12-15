@@ -1,3 +1,9 @@
+/**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Post Routes with full CRUD functionality for posts and comments
+ */
+
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
@@ -5,17 +11,30 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 
 // @route   GET /api/posts
-// @desc    Get all posts with user info
+// @desc    Get all posts with user info (optionally filtered by forum)
 // @access  Private
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const posts = await Post.find()
+    const { forum } = req.query;
+
+    // Build filter object
+    const filter = {};
+    if (forum && forum !== "All") {
+      filter.forum = forum;
+    }
+
+    const posts = await Post.find(filter)
       .sort({ date: -1 })
-      .populate("user", "username")
-      .populate("comments.user", "username");
+      .populate("user", "username email")
+      .populate("comments.user", "username email");
+
+    console.log(
+      `Posts fetched: ${posts.length}${forum ? ` (filtered by: ${forum})` : ""}`
+    );
+
     res.json(posts);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error fetching posts:", err.message);
     res.status(500).send("Server Error");
   }
 });
@@ -24,26 +43,37 @@ router.get("/", authMiddleware, async (req, res) => {
 // @desc    Create a post
 // @access  Private
 router.post("/", authMiddleware, async (req, res) => {
-  const { content } = req.body;
+  const { content, forum } = req.body;
 
   if (!content || content.trim() === "") {
     return res.status(400).json({ msg: "Post content is required" });
   }
 
   try {
+    console.log(
+      "Creating post for user ID:",
+      req.user.id,
+      "Forum:",
+      forum || "General Discussion"
+    );
+
     const newPost = new Post({
       user: req.user.id,
       content: content.trim(),
+      forum: forum || "General Discussion",
     });
 
     const post = await newPost.save();
+    console.log("Post saved with ID:", post._id);
 
     // Populate user info before sending response
-    await post.populate("user", "username");
+    await post.populate("user", "username email");
+
+    console.log("Post created successfully with forum:", post.forum);
 
     res.json(post);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error creating post:", err.message);
     res.status(500).send("Server Error");
   }
 });
@@ -137,7 +167,9 @@ router.post("/comment/:id", authMiddleware, async (req, res) => {
     await post.save();
 
     // Populate user info for the response
-    await post.populate("comments.user", "username");
+    await post.populate("comments.user", "username email");
+
+    console.log("Comment added, first comment user:", post.comments[0].user);
 
     res.json(post.comments);
   } catch (err) {

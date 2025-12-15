@@ -2,8 +2,7 @@
  * Project: A.R.C. Web Application
  * Student: Safia Nassiri
  * Date: December 2025
- * Displays the Community Feed where users can view posts,
- * create new posts, and interact with the community.
+ * Community page with functional forum filtering
  */
 
 import React, { useState, useEffect } from "react";
@@ -13,28 +12,35 @@ import PostCard from "../components/PostCard";
 import { FaImage, FaPaperPlane } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 
+const FORUMS = [
+  "General Discussion",
+  "Looking for Group (LFG)",
+  "Path of Exile",
+  "Death Stranding",
+  "Off-Topic",
+];
+
 function CommunityPage() {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [postContent, setPostContent] = useState("");
+  const [selectedForum, setSelectedForum] = useState("General Discussion");
+  const [activeForum, setActiveForum] = useState("All"); // For filtering view
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch all posts on component mount
+  // Fetch posts when component mounts or when active forum changes
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [activeForum]);
 
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/posts");
+      const params = activeForum !== "All" ? { forum: activeForum } : {};
+      const res = await api.get("/posts", { params });
       console.log("Fetched posts from API:", res.data);
-      if (res.data.length > 0) {
-        console.log("First post structure:", res.data[0]);
-        console.log("First post user:", res.data[0].user);
-      }
       setPosts(res.data);
       setError(null);
     } catch (err) {
@@ -54,13 +60,16 @@ function CommunityPage() {
       setSubmitting(true);
       const res = await api.post("/posts", {
         content: postContent,
+        forum: selectedForum,
       });
 
       console.log("New post created:", res.data);
-      console.log("New post user:", res.data.user);
 
-      // Add new post to the top of the list
-      setPosts([res.data, ...posts]);
+      // Add new post to the list if it matches current filter
+      if (activeForum === "All" || activeForum === selectedForum) {
+        setPosts([res.data, ...posts]);
+      }
+
       setPostContent("");
       setError(null);
     } catch (err) {
@@ -85,7 +94,6 @@ function CommunityPage() {
     try {
       const res = await api.put(`/posts/like/${postId}`);
 
-      // Update the post's likes in state
       setPosts(
         posts.map((post) =>
           post._id === postId ? { ...post, likes: res.data } : post
@@ -102,7 +110,6 @@ function CommunityPage() {
         content: commentContent,
       });
 
-      // Update the post's comments in state
       setPosts(
         posts.map((post) =>
           post._id === postId ? { ...post, comments: res.data } : post
@@ -118,7 +125,6 @@ function CommunityPage() {
     try {
       const res = await api.delete(`/posts/comment/${postId}/${commentId}`);
 
-      // Update the post's comments in state
       setPosts(
         posts.map((post) =>
           post._id === postId ? { ...post, comments: res.data } : post
@@ -129,10 +135,25 @@ function CommunityPage() {
     }
   };
 
+  const handleForumClick = (forum) => {
+    setActiveForum(forum);
+  };
+
   return (
     <main className="community-page">
       <header className="community-header">
         <h1>Community Feed</h1>
+        {activeForum !== "All" && (
+          <p className="active-forum-label">
+            Viewing: <strong>{activeForum}</strong>
+            <button
+              className="clear-filter-btn"
+              onClick={() => setActiveForum("All")}
+            >
+              Show All
+            </button>
+          </p>
+        )}
       </header>
 
       {error && (
@@ -153,6 +174,21 @@ function CommunityPage() {
       <div className="community-layout">
         <section className="community-feed">
           <div className="create-post-box">
+            <div className="post-forum-selector">
+              <label htmlFor="forum-select">Forum:</label>
+              <select
+                id="forum-select"
+                value={selectedForum}
+                onChange={(e) => setSelectedForum(e.target.value)}
+                className="forum-select"
+              >
+                {FORUMS.map((forum) => (
+                  <option key={forum} value={forum}>
+                    {forum}
+                  </option>
+                ))}
+              </select>
+            </div>
             <textarea
               className="create-post-input"
               placeholder="Start a discussion..."
@@ -199,7 +235,9 @@ function CommunityPage() {
                 color: "var(--text-secondary)",
               }}
             >
-              No posts yet. Be the first to start a discussion!
+              {activeForum === "All"
+                ? "No posts yet. Be the first to start a discussion!"
+                : `No posts in ${activeForum} yet. Be the first!`}
             </div>
           ) : (
             posts.map((post) => (
@@ -222,11 +260,21 @@ function CommunityPage() {
               <h3>Forums</h3>
             </div>
             <ul className="groups-card-list">
-              <li># General Discussion</li>
-              <li># Looking for Group (LFG)</li>
-              <li># Path of Exile</li>
-              <li># Death Stranding</li>
-              <li># Off-Topic</li>
+              <li
+                className={activeForum === "All" ? "active" : ""}
+                onClick={() => handleForumClick("All")}
+              >
+                # All Posts
+              </li>
+              {FORUMS.map((forum) => (
+                <li
+                  key={forum}
+                  className={activeForum === forum ? "active" : ""}
+                  onClick={() => handleForumClick(forum)}
+                >
+                  # {forum}
+                </li>
+              ))}
             </ul>
           </div>
         </aside>
