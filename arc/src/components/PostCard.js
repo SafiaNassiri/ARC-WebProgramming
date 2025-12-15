@@ -1,13 +1,3 @@
-/**
- * Project: A.R.C. Web Application
- * Student: Safia Nassiri
- * Date: December 2025
- * Displays an individual post with full interaction capabilities:
- * - Like/unlike functionality
- * - Comment section with add/delete
- * - Delete post (if user is owner)
- */
-
 import React, { useState } from "react";
 import { FaHeart, FaCommentAlt, FaTrash, FaPaperPlane } from "react-icons/fa";
 import "../Styles/PostCard.css";
@@ -19,39 +9,30 @@ function PostCard({
   onLike,
   onAddComment,
   onDeleteComment,
+  onForumClick,
 }) {
   const [showComments, setShowComments] = useState(false);
   const [commentContent, setCommentContent] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
 
-  // Get username - handle both username and name fields
-  const getUsername = (user) => {
-    if (!user) {
-      console.warn("No user object provided");
-      return "Unknown User";
-    }
-    if (typeof user === "string") {
-      console.warn("User is a string (unpopulated):", user);
-      return "Unknown User";
-    }
-    const username = user.username || user.name || user.email?.split("@")[0];
-    console.log("Getting username for user:", user, "-> result:", username);
-    return username || "Unknown User";
-  };
+  const getUsername = (user) =>
+    !user || typeof user === "string"
+      ? "Unknown User"
+      : user.username ||
+        user.name ||
+        user.email?.split("@")[0] ||
+        "Unknown User";
 
-  // Check if current user has liked this post
   const isLiked = post.likes?.some((like) => {
     const likeId = typeof like === "string" ? like : like._id || like.id;
     return likeId === currentUserId;
   });
+
   const likeCount = post.likes?.length || 0;
   const commentCount = post.comments?.length || 0;
-
-  // Check if current user is the post author
   const postAuthorId = post.user?._id || post.user?.id;
   const isOwner = postAuthorId && postAuthorId === currentUserId;
 
-  // Generate a color based on username (consistent avatar color)
   const getAvatarColor = (user) => {
     const colors = [
       "#c13d50",
@@ -69,12 +50,10 @@ function PostCard({
     return colors[index % colors.length];
   };
 
-  // Format date to relative time
   const formatTimestamp = (date) => {
     const now = new Date();
     const postDate = new Date(date);
-    const diffMs = now - postDate;
-    const diffMins = Math.floor(diffMs / 60000);
+    const diffMins = Math.floor((now - postDate) / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
@@ -87,36 +66,29 @@ function PostCard({
     return postDate.toLocaleDateString();
   };
 
-  const handleLike = () => {
-    onLike(post._id);
-  };
+  const handleLike = () => onLike(post._id);
+  const handleDeletePost = () =>
+    isOwner && window.confirm("Are you sure?") && onDelete(post._id);
 
   const handleCommentSubmit = async () => {
     if (!commentContent.trim()) return;
-
     try {
       setSubmittingComment(true);
       await onAddComment(post._id, commentContent);
       setCommentContent("");
       setShowComments(true);
-    } catch (err) {
-      console.error("Failed to add comment");
     } finally {
       setSubmittingComment(false);
     }
   };
 
-  const handleDeletePost = () => {
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      onDelete(post._id);
-    }
+  const handleDeleteComment = (commentId) => {
+    if (window.confirm("Delete this comment?"))
+      onDeleteComment(post._id, commentId);
   };
 
-  const handleDeleteComment = (commentId) => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
-      onDeleteComment(post._id, commentId);
-    }
-  };
+  const forumDisplay =
+    post.forum && post.forum.trim() !== "" ? post.forum : "General Discussion";
 
   return (
     <article
@@ -124,21 +96,18 @@ function PostCard({
       aria-label={`Post by ${getUsername(post.user)}`}
     >
       <header className="post-card-header">
-        <div
-          className="post-card-avatar"
-          style={{ backgroundColor: getAvatarColor(post.user) }}
-          aria-hidden="true"
-        ></div>
-
-        <div className="post-card-author-info">
-          <span className="post-card-author">{getUsername(post.user)}</span>
-          <div className="post-card-meta">
-            {post.forum && (
-              <span className="post-forum-tag"># {post.forum}</span>
-            )}
-            <time className="post-card-timestamp" dateTime={post.date}>
-              {formatTimestamp(post.date)}
-            </time>
+        <div className="post-card-header-left">
+          <div
+            className="post-card-avatar"
+            style={{ backgroundColor: getAvatarColor(post.user) }}
+          />
+          <div className="post-card-author-info">
+            <span className="post-card-author">{getUsername(post.user)}</span>
+            <div className="post-card-meta">
+              <time className="post-card-timestamp" dateTime={post.date}>
+                {formatTimestamp(post.date)}
+              </time>
+            </div>
           </div>
         </div>
 
@@ -154,6 +123,15 @@ function PostCard({
           </button>
         )}
       </header>
+
+      {/* Forum display */}
+      <div
+        className="post-card-forum"
+        onClick={() => forumDisplay && onForumClick?.(forumDisplay)}
+        style={{ cursor: forumDisplay ? "pointer" : "default" }}
+      >
+        Forum: {forumDisplay}
+      </div>
 
       <div className="post-card-content">
         <p>{post.content}</p>
@@ -221,7 +199,7 @@ function PostCard({
                     <div
                       className="comment-avatar"
                       style={{ backgroundColor: getAvatarColor(comment.user) }}
-                    ></div>
+                    />
                     <div className="comment-info">
                       <span className="comment-author">
                         {getUsername(comment.user)}

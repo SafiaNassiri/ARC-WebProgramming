@@ -1,15 +1,8 @@
-/**
- * Project: A.R.C. Web Application
- * Student: Safia Nassiri
- * Date: December 2025
- * Community page with functional forum filtering
- */
-
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
 import "../Styles/CommunityPage.css";
 import PostCard from "../components/PostCard";
-import { FaImage, FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 
 const FORUMS = [
@@ -22,26 +15,24 @@ const FORUMS = [
 
 function CommunityPage() {
   const { user } = useAuth();
-  const [posts, setPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [postContent, setPostContent] = useState("");
-  const [selectedForum, setSelectedForum] = useState("General Discussion");
-  const [activeForum, setActiveForum] = useState("All"); // For filtering view
+  const [selectedForum, setSelectedForum] = useState(FORUMS[0]);
+  const [activeForum, setActiveForum] = useState("All");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch posts when component mounts or when active forum changes
   useEffect(() => {
     fetchPosts();
-  }, [activeForum]);
+  }, []);
 
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const params = activeForum !== "All" ? { forum: activeForum } : {};
-      const res = await api.get("/posts", { params });
-      console.log("Fetched posts from API:", res.data);
-      setPosts(res.data);
+      const res = await api.get("/posts");
+      console.log("Posts fetched:", res.data);
+      setAllPosts(res.data);
       setError(null);
     } catch (err) {
       console.error("Error fetching posts:", err);
@@ -51,25 +42,23 @@ function CommunityPage() {
     }
   };
 
-  const handlePostSubmit = async () => {
-    if (!postContent.trim()) {
-      return;
-    }
+  const filteredPosts =
+    activeForum === "All"
+      ? allPosts
+      : allPosts.filter((post) => post.forum === activeForum);
 
+  const handlePostSubmit = async () => {
+    if (!postContent.trim()) return;
     try {
       setSubmitting(true);
+      console.log("Submitting post to forum:", selectedForum);
       const res = await api.post("/posts", {
         content: postContent,
         forum: selectedForum,
       });
-
-      console.log("New post created:", res.data);
-
-      // Add new post to the list if it matches current filter
-      if (activeForum === "All" || activeForum === selectedForum) {
-        setPosts([res.data, ...posts]);
-      }
-
+      // Make sure the forum comes back populated
+      const newPost = { ...res.data, forum: res.data.forum || selectedForum };
+      setAllPosts([newPost, ...allPosts]);
       setPostContent("");
       setError(null);
     } catch (err) {
@@ -83,7 +72,7 @@ function CommunityPage() {
   const handleDeletePost = async (postId) => {
     try {
       await api.delete(`/posts/${postId}`);
-      setPosts(posts.filter((post) => post._id !== postId));
+      setAllPosts(allPosts.filter((post) => post._id !== postId));
     } catch (err) {
       console.error("Error deleting post:", err);
       setError("Failed to delete post.");
@@ -93,9 +82,8 @@ function CommunityPage() {
   const handleLikePost = async (postId) => {
     try {
       const res = await api.put(`/posts/like/${postId}`);
-
-      setPosts(
-        posts.map((post) =>
+      setAllPosts(
+        allPosts.map((post) =>
           post._id === postId ? { ...post, likes: res.data } : post
         )
       );
@@ -105,82 +93,59 @@ function CommunityPage() {
   };
 
   const handleAddComment = async (postId, commentContent) => {
-    try {
-      const res = await api.post(`/posts/comment/${postId}`, {
-        content: commentContent,
-      });
-
-      setPosts(
-        posts.map((post) =>
-          post._id === postId ? { ...post, comments: res.data } : post
-        )
-      );
-    } catch (err) {
-      console.error("Error adding comment:", err);
-      throw err;
-    }
+    const res = await api.post(`/posts/comment/${postId}`, {
+      content: commentContent,
+    });
+    setAllPosts(
+      allPosts.map((post) =>
+        post._id === postId ? { ...post, comments: res.data } : post
+      )
+    );
   };
 
   const handleDeleteComment = async (postId, commentId) => {
-    try {
-      const res = await api.delete(`/posts/comment/${postId}/${commentId}`);
-
-      setPosts(
-        posts.map((post) =>
-          post._id === postId ? { ...post, comments: res.data } : post
-        )
-      );
-    } catch (err) {
-      console.error("Error deleting comment:", err);
-    }
-  };
-
-  const handleForumClick = (forum) => {
-    setActiveForum(forum);
+    const res = await api.delete(`/posts/comment/${postId}/${commentId}`);
+    setAllPosts(
+      allPosts.map((post) =>
+        post._id === postId ? { ...post, comments: res.data } : post
+      )
+    );
   };
 
   return (
     <main className="community-page">
       <header className="community-header">
         <h1>Community Feed</h1>
-        {activeForum !== "All" && (
-          <p className="active-forum-label">
-            Viewing: <strong>{activeForum}</strong>
+        <div className="active-forum-label">
+          Showing:{" "}
+          <strong>{activeForum === "All" ? "All Posts" : activeForum}</strong>
+          {activeForum !== "All" && (
             <button
               className="clear-filter-btn"
               onClick={() => setActiveForum("All")}
             >
-              Show All
+              Clear Filter
             </button>
-          </p>
-        )}
+          )}
+        </div>
       </header>
 
-      {error && (
-        <div
-          className="error-message"
-          style={{
-            padding: "1rem",
-            margin: "1rem 0",
-            backgroundColor: "var(--error-bg, #fee)",
-            color: "var(--error-text, #c00)",
-            borderRadius: "8px",
-          }}
-        >
-          {error}
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
 
       <div className="community-layout">
         <section className="community-feed">
           <div className="create-post-box">
-            <div className="post-forum-selector">
-              <label htmlFor="forum-select">Forum:</label>
+            <textarea
+              placeholder="Start a discussion..."
+              rows="3"
+              value={postContent}
+              onChange={(e) => setPostContent(e.target.value)}
+              disabled={submitting}
+            />
+            <div className="create-post-actions">
               <select
-                id="forum-select"
                 value={selectedForum}
                 onChange={(e) => setSelectedForum(e.target.value)}
-                className="forum-select"
               >
                 {FORUMS.map((forum) => (
                   <option key={forum} value={forum}>
@@ -188,59 +153,26 @@ function CommunityPage() {
                   </option>
                 ))}
               </select>
-            </div>
-            <textarea
-              className="create-post-input"
-              placeholder="Start a discussion..."
-              rows="3"
-              value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-              disabled={submitting}
-            ></textarea>
-            <div className="create-post-actions">
-              <div className="create-post-icons">
-                <button title="Attach Image (coming soon)" disabled>
-                  <FaImage />
-                </button>
-              </div>
               <button
-                className="create-post-submit"
                 onClick={handlePostSubmit}
                 disabled={submitting || !postContent.trim()}
-                title={submitting ? "Posting..." : "Post"}
+                className="create-post-submit"
               >
-                <FaPaperPlane />
-                <span>{submitting ? "Posting..." : "Post"}</span>
+                <FaPaperPlane /> Post
               </button>
             </div>
           </div>
 
           {loading ? (
-            <div
-              className="loading-message"
-              style={{
-                textAlign: "center",
-                padding: "2rem",
-                color: "var(--text-secondary)",
-              }}
-            >
-              Loading posts...
-            </div>
-          ) : posts.length === 0 ? (
-            <div
-              className="no-posts-message"
-              style={{
-                textAlign: "center",
-                padding: "2rem",
-                color: "var(--text-secondary)",
-              }}
-            >
+            <p>Loading posts...</p>
+          ) : filteredPosts.length === 0 ? (
+            <p>
               {activeForum === "All"
-                ? "No posts yet. Be the first to start a discussion!"
-                : `No posts in ${activeForum} yet. Be the first!`}
-            </div>
+                ? "No posts yet."
+                : `No posts in ${activeForum} yet.`}
+            </p>
           ) : (
-            posts.map((post) => (
+            filteredPosts.map((post) => (
               <PostCard
                 key={post._id}
                 post={post}
@@ -255,28 +187,23 @@ function CommunityPage() {
         </section>
 
         <aside className="community-sidebar">
-          <div className="groups-card">
-            <div className="groups-card-header">
-              <h3>Forums</h3>
-            </div>
-            <ul className="groups-card-list">
+          <ul>
+            <li
+              className={activeForum === "All" ? "active" : ""}
+              onClick={() => setActiveForum("All")}
+            >
+              # All Posts
+            </li>
+            {FORUMS.map((forum) => (
               <li
-                className={activeForum === "All" ? "active" : ""}
-                onClick={() => handleForumClick("All")}
+                key={forum}
+                className={activeForum === forum ? "active" : ""}
+                onClick={() => setActiveForum(forum)}
               >
-                # All Posts
+                # {forum}
               </li>
-              {FORUMS.map((forum) => (
-                <li
-                  key={forum}
-                  className={activeForum === forum ? "active" : ""}
-                  onClick={() => handleForumClick(forum)}
-                >
-                  # {forum}
-                </li>
-              ))}
-            </ul>
-          </div>
+            ))}
+          </ul>
         </aside>
       </div>
     </main>
