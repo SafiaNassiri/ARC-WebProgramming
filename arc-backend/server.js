@@ -7,7 +7,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path"); // ✅ ADD THIS
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve uploaded files (avatars)
+// Serve uploaded files (avatars, etc.)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Log ALL incoming requests
@@ -43,13 +43,10 @@ mongoose
 /* ======================
    Test / Health Routes
 ====================== */
-
-// Server health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
-// Verify auth routes are mounted
 app.get("/api/auth/test", (req, res) => {
   res.json({
     status: "ok",
@@ -60,20 +57,14 @@ app.get("/api/auth/test", (req, res) => {
 /* ======================
    API Routes
 ====================== */
-console.log("Loading auth routes...");
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
-console.log("Auth routes mounted at /api/auth");
 
-console.log("Loading games routes...");
 const gamesRoutes = require("./routes/games");
 app.use("/api/games", gamesRoutes);
-console.log("Games routes mounted at /api/games");
 
-console.log("Loading posts routes...");
 const postsRoutes = require("./routes/posts");
 app.use("/api/posts", postsRoutes);
-console.log("Posts routes mounted at /api/posts");
 
 /* ======================
    404 Handler
@@ -90,7 +81,7 @@ app.use((req, res) => {
       "POST /api/auth/login",
       "PUT /api/auth/profile",
       "PUT /api/auth/password",
-      "POST /api/auth/avatar", // ✅ ADD THIS
+      "POST /api/auth/avatar", // Avatar upload
       "DELETE /api/auth/account",
       "GET /api/games",
       "GET /api/posts",
@@ -107,5 +98,7 @@ app.listen(PORT, () => {
   console.log(`Base URL: http://localhost:${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`Auth test: http://localhost:${PORT}/api/auth/test`);
-  console.log(`Avatar uploads: http://localhost:${PORT}/uploads/avatars\n`);
+  console.log(
+    `Avatar uploads served at: http://localhost:${PORT}/uploads/avatars`
+  );
 });

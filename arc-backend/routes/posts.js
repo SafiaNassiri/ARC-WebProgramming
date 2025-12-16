@@ -18,8 +18,8 @@ router.get("/", authMiddleware, async (req, res) => {
 
     const posts = await Post.find(filter)
       .sort({ date: -1 })
-      .populate("user", "username email")
-      .populate("comments.user", "username email");
+      .populate("user", "username avatar") // post author
+      .populate("comments.user", "username avatar"); // comment authors
 
     res.json(posts);
   } catch (err) {
@@ -43,7 +43,7 @@ router.post("/", authMiddleware, async (req, res) => {
     });
 
     const post = await newPost.save();
-    await post.populate("user", "username email");
+    await post.populate("user", "username avatar"); // <-- include avatar here
     res.json(post);
   } catch (err) {
     console.error(err.message);
@@ -99,7 +99,8 @@ router.post("/comment/:id", authMiddleware, async (req, res) => {
 
     post.comments.unshift({ user: req.user.id, content: content.trim() });
     await post.save();
-    await post.populate("comments.user", "username email");
+
+    await post.populate("comments.user", "username avatar"); // populate avatar
     res.json(post.comments);
   } catch (err) {
     console.error(err.message);
