@@ -1,111 +1,121 @@
-/** 
+/**
  * Project: A.R.C. Web Application
  * Student: Safia Nassiri
- * Date: October 2025
-*/
+ * ADD THESE ROUTES to your routes/auth.js file
+ */
 
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const authMiddleware = require('../middleware/auth');
-
-// Initialize router
+const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middleware/auth");
+const User = require("../models/User");
 
-router.get('/', authMiddleware, async (req, res) => {
-    try {
-        // req.user.id comes from authMiddleware
-        const user = await User.findById(req.user.id).select('-password'); // Exclude password
-        if (!user) return res.status(404).json({ msg: 'User not found' });
+// ... Your existing routes (register, login, GET /auth) ...
 
-        res.json(user);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+// @route   PUT /api/auth/profile
+// @desc    Update user profile (username and bio)
+// @access  Private
+router.put("/profile", authMiddleware, async (req, res) => {
+  const { username, bio } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
     }
+
+    // Check if username is already taken by another user
+    if (username && username !== user.username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        return res.status(400).json({ msg: "Username already taken" });
+      }
+    }
+
+    // Update fields
+    if (username) user.username = username;
+    if (bio !== undefined) user.bio = bio; // Allow empty string
+
+    await user.save();
+
+    res.json({
+      msg: "Profile updated successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+      },
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
-router.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
+// @route   PUT /api/auth/password
+// @desc    Change user password
+// @access  Private
+router.put("/password", authMiddleware, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
 
-    // Validation
-    if (!username || !email || !password)
-        return res.status(400).json({ msg: 'Please enter all fields' });
-    if (password.length < 6)
-        return res.status(400).json({ msg: 'Password must be at least 6 characters' });
+  // Validation
+  if (!currentPassword || !newPassword) {
+    return res
+      .status(400)
+      .json({ msg: "Please provide current and new password" });
+  }
 
-    try {
-        // Check if email already exists
-        if (await User.findOne({ email }))
-            return res.status(400).json({ msg: 'User with this email already exists' });
+  if (newPassword.length < 6) {
+    return res
+      .status(400)
+      .json({ msg: "New password must be at least 6 characters" });
+  }
 
-        // Check if username already exists
-        if (await User.findOne({ username }))
-            return res.status(400).json({ msg: 'This username is already taken' });
-
-        // Create new user instance
-        const user = new User({ username, email, password });
-
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
-
-        // Save user to DB
-        await user.save();
-
-        // Create JWT payload
-        const payload = { user: { id: user.id } };
-
-        // Sign and return JWT
-        jwt.sign(
-            payload,
-            process.env.JWT_SECRET,
-            { expiresIn: '5h' },
-            (err, token) => {
-                if (err) throw err;
-                res.json({ token });
-            }
-        );
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+  try {
+    const user = await User.findById(req.user.id).select("+password");
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
     }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Current password is incorrect" });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await user.save();
+
+    res.json({ msg: "Password changed successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+// @route   DELETE /api/auth/account
+// @desc    Delete user account and all associated data
+// @access  Private
+router.delete("/account", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
 
-    // Validation
-    if (!email || !password)
-        return res.status(400).json({ msg: 'Please enter all fields' });
+    // Delete user's posts
+    await Post.deleteMany({ user: userId });
 
-    try {
-        // Check if user exists
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
+    // Delete user account
+    await User.findByIdAndDelete(userId);
 
-        // Compare password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
-
-        // Create JWT payload
-        const payload = { user: { id: user.id } };
-
-        // Sign and return JWT
-        jwt.sign(
-            payload,
-            process.env.JWT_SECRET,
-            { expiresIn: '5h' },
-            (err, token) => {
-                if (err) throw err;
-                res.json({ token });
-            }
-        );
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
+    res.json({ msg: "Account deleted successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
 module.exports = router;

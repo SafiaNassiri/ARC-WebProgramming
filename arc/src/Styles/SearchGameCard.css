@@ -1,0 +1,209 @@
+/**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Styles for SearchGameCard component - Modern & Cohesive
+ */
+
+.search-game-card {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.search-game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(193, 61, 80, 0.15);
+  border-color: rgba(193, 61, 80, 0.2);
+}
+
+[data-theme="dark"] .search-game-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .search-game-card:hover {
+  box-shadow: 0 12px 28px rgba(193, 61, 80, 0.3);
+}
+
+.search-game-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--bg-tertiary) 0%,
+    var(--bg-primary) 100%
+  );
+}
+
+.search-game-image-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.search-game-card:hover .search-game-image-wrapper::after {
+  opacity: 1;
+}
+
+.search-game-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-game-card:hover .search-game-image {
+  transform: scale(1.1);
+}
+
+.search-game-no-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.favorite-toggle-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.search-game-card:hover .favorite-toggle-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+[data-theme="dark"] .favorite-toggle-btn {
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--text-secondary);
+}
+
+.favorite-toggle-btn:hover {
+  transform: scale(1.15);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .favorite-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.favorite-toggle-btn.favorited {
+  color: var(--accent-primary);
+  background: rgba(255, 255, 255, 1);
+  opacity: 1;
+  transform: scale(1);
+}
+
+[data-theme="dark"] .favorite-toggle-btn.favorited {
+  background: rgba(193, 61, 80, 0.15);
+  color: var(--accent-primary);
+}
+
+.favorite-toggle-btn.favorited svg {
+  fill: var(--accent-primary);
+}
+
+.favorite-toggle-btn.favorited:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(193, 61, 80, 0.3);
+}
+
+.favorite-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.search-game-info {
+  padding: 1.125rem;
+  background: var(--bg-secondary);
+}
+
+.search-game-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.8em;
+}
+
+.search-game-rating {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-game-card {
+    border-radius: 12px;
+  }
+
+  .favorite-toggle-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .search-game-info {
+    padding: 1rem;
+  }
+
+  .search-game-title {
+    font-size: 0.9rem;
+  }
+
+  .search-game-rating {
+    font-size: 0.8rem;
+  }
+}

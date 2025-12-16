@@ -1,134 +1,282 @@
 .profile-header {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    background-color: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  background-color: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 8px;
 }
 
 .profile-avatar {
-    width: 120px;
-    height: 120px;
-    background-color: var(--accent-soft);
-    border-radius: 50%;
-    border: 3px solid var(--accent-primary);
-    flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  background-color: var(--accent-soft);
+  border-radius: 50%;
+  border: 3px solid var(--accent-primary);
+  flex-shrink: 0;
 }
 
 .profile-info {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .profile-username {
-    margin: 0;
-    font-size: 2.5rem;
-    color: var(--text-primary);
+  margin: 0;
+  font-size: 2.5rem;
+  color: var(--text-primary);
 }
 
 .profile-bio {
-    margin: 0.5rem 0 0 0;
-    font-size: 1rem;
-    color: var(--text-secondary);
-    font-style: italic;
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .profile-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--bg-tertiary);
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--bg-tertiary);
 }
 
 .profile-tab-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: none;
-    border: none;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transform: translateY(2px);
-    transition: color 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transform: translateY(2px);
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .profile-tab-button:hover {
-    color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 .profile-tab-button.active {
-    color: var(--accent-primary);
-    border-bottom-color: var(--accent-primary);
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
 }
 
-.profile-tab-content {}
+.profile-tab-content {
+}
 
 .achievements-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .achievement-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: var(--bg-secondary);
-    padding: 1.25rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--bg-secondary);
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] .achievement-card {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .achievement-icon {
-    font-size: 2.5rem;
-    color: var(--accent-secondary);
-    flex-shrink: 0;
+  font-size: 2.5rem;
+  color: var(--accent-secondary);
+  flex-shrink: 0;
 }
 
-.achievement-info {}
+.achievement-info {
+}
 
 .achievement-title {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-primary);
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .achievement-game {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .my-posts-feed {
-    max-width: 800px;
-    margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .profile-game-library {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
 @media (max-width: 900px) {
-    .profile-game-library {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .profile-game-library {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 600px) {
-    .profile-game-library {
-        grid-template-columns: 1fr;
-    }
+  .profile-game-library {
+    grid-template-columns: 1fr;
+  }
+}
+
+/**
+ * Additional styles for functional profile page
+ * ADD THESE to your existing ProfilePage.css
+ */
+
+/* Profile Page Container */
+.profile-page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Avatar with Letter */
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.avatar-letter {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile Stats */
+.profile-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.profile-stats .stat {
+  color: var(--text-secondary);
+}
+
+.profile-stats .stat strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.profile-stats .stat-divider {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+/* Tab Count Badge */
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.profile-tab-button.active .tab-count {
+  background: rgba(193, 61, 80, 0.15);
+  color: var(--accent-primary);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 2px dashed var(--bg-tertiary);
+}
+
+.empty-state p:first-child {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p:last-child {
+  color: var(--text-secondary);
+  margin-top: 0;
+}
+
+/* Loading State */
+.loading-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .avatar-letter {
+    font-size: 2.5rem;
+  }
+
+  .profile-username {
+    font-size: 2rem;
+  }
+
+  .profile-stats {
+    justify-content: center;
+  }
+
+  .profile-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .profile-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .profile-tab-button {
+    font-size: 1rem;
+    padding: 0.625rem 1rem;
+    white-space: nowrap;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+  }
 }

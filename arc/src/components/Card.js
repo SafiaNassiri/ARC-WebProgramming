@@ -1,18 +1,26 @@
+/**
+ * Project: A.R.C. Web Application
+ * Student: Safia Nassiri
+ * Updated Card component with filled/empty heart toggle
+ */
+
 import React, { useState } from "react";
-import { FaRegHeart, FaTimes } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaTimes } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import "../Styles/Card.css";
 
 function Card({ game }) {
-  const { id, _id, title, name, description, imageUrl } = game;
-  const gameId = game.gameId || id || _id; // ensure matches favoriteGames
-  const { favoriteGames, addFavoriteGame, removeFavoriteGame } = useAuth();
+  const { id, _id, title, name, description, imageUrl, rating } = game;
+  const gameId = String(game.gameId || id || _id);
+  const { favoriteGames, toggleFavoriteGame, isAuthenticated } = useAuth();
 
   const [tooltipMessage, setTooltipMessage] = useState("");
   const [showTooltipFlag, setShowTooltipFlag] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
 
+  // Check if this game is in favorites
   const isFavorited = favoriteGames.some(
-    (favGame) => (favGame.gameId || favGame.id) === gameId
+    (favGame) => String(favGame.gameId || favGame.id) === gameId
   );
 
   const displayTitle = title || name || "Game Title";
@@ -23,27 +31,35 @@ function Card({ game }) {
     setTimeout(() => setShowTooltipFlag(false), 2500);
   };
 
-  // Add to favorites
-  const handleFavorite = async () => {
-    if (!isFavorited) {
-      try {
-        await addFavoriteGame(game);
-        showTooltip("Added to favorites!");
-      } catch (err) {
-        console.error(err);
-        showTooltip("Failed to add favorite!");
-      }
+  // Toggle favorite status
+  const handleHeartClick = async () => {
+    if (!isAuthenticated) {
+      showTooltip("Please log in to add favorites!");
+      return;
     }
-  };
 
-  // Remove from favorites
-  const handleRemove = async () => {
+    if (isToggling) return; // Prevent double-clicks
+
+    setIsToggling(true);
     try {
-      await removeFavoriteGame(gameId);
-      showTooltip("Removed from favorites!");
+      await toggleFavoriteGame({
+        id: gameId,
+        title: displayTitle,
+        imageUrl: imageUrl,
+        rating: rating || 0,
+      });
+
+      // Show appropriate message
+      if (isFavorited) {
+        showTooltip("Removed from favorites!");
+      } else {
+        showTooltip("Added to favorites!");
+      }
     } catch (err) {
-      console.error(err);
-      showTooltip("Failed to remove favorite!");
+      console.error("Error toggling favorite:", err);
+      showTooltip("Failed to update favorites!");
+    } finally {
+      setIsToggling(false);
     }
   };
 
@@ -56,12 +72,16 @@ function Card({ game }) {
           className="game-card-image"
         />
 
+        {/* Heart button - always visible, toggles between filled/empty */}
         <button
-          className="game-card-remove-btn"
-          onClick={handleRemove}
-          aria-label="Remove from favorites"
+          className={`game-card-favorite-btn ${isFavorited ? "favorited" : ""}`}
+          onClick={handleHeartClick}
+          disabled={isToggling}
+          aria-label={
+            isFavorited ? "Remove from favorites" : "Add to favorites"
+          }
         >
-          <FaTimes color="red" />
+          {isFavorited ? <FaHeart /> : <FaRegHeart />}
         </button>
       </div>
 
@@ -71,16 +91,7 @@ function Card({ game }) {
           {description || "No description available"}
         </p>
 
-        {!isFavorited && (
-          <button
-            className="game-card-favorite-btn"
-            onClick={handleFavorite}
-            aria-label="Add to favorites"
-          >
-            <FaRegHeart />
-          </button>
-        )}
-
+        {/* Tooltip */}
         {tooltipMessage && (
           <div className={`tooltip ${showTooltipFlag ? "show" : ""}`}>
             {tooltipMessage}
