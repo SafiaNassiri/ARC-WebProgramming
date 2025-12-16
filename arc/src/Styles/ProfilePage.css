@@ -8,13 +8,32 @@
   border-radius: 8px;
 }
 
+.profile-avatar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .profile-avatar {
-  width: 120px;
-  height: 120px;
-  background-color: var(--accent-soft);
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
-  border: 3px solid var(--accent-primary);
-  flex-shrink: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-info {
@@ -135,11 +154,6 @@
   }
 }
 
-/**
- * Additional styles for functional profile page
- * ADD THESE to your existing ProfilePage.css
- */
-
 /* Profile Page Container */
 .profile-page-container {
   max-width: 1400px;
@@ -149,17 +163,24 @@
 
 /* Avatar with Letter */
 .profile-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
 .avatar-letter {
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: bold;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Profile Stats */
@@ -279,4 +300,21 @@
   .empty-state {
     padding: 2rem 1rem;
   }
+}
+
+.profile-join-date {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
+.avatar-upload-btn {
+  font-size: 0.75rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.avatar-upload-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
 }

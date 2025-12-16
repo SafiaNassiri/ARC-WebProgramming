@@ -16,6 +16,7 @@ import { FaGamepad, FaPenSquare } from "react-icons/fa";
 function ProfilePage() {
   const [activeTab, setActiveTab] = useState("library");
   const { user, favoriteGames, posts } = useAuth();
+  const [uploading, setUploading] = useState(false);
 
   // Filter posts by current user
   const userPosts = Array.isArray(posts)
@@ -64,6 +65,36 @@ function ProfilePage() {
       await api.delete(`/posts/comment/${postId}/${commentId}`);
     } catch (err) {
       console.error("Error deleting comment:", err);
+    }
+  };
+
+  const formatJoinDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      setUploading(true);
+      await api.post("/auth/avatar", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      window.location.reload(); // simple refresh
+    } catch (err) {
+      alert("Failed to upload avatar");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -138,22 +169,45 @@ function ProfilePage() {
   return (
     <div className="profile-page-container">
       <div className="profile-header">
-        <div
-          className="profile-avatar"
-          style={{
-            background: `linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))`,
-          }}
-        >
-          {/* Display first letter of username */}
-          <span className="avatar-letter">
-            {user.username?.charAt(0).toUpperCase() || "?"}
-          </span>
+        <div className="profile-avatar-wrapper">
+          <div className="profile-avatar">
+            {user.avatar ? (
+              <img
+                src={`http://localhost:5000${user.avatar}`}
+                alt="Profile Avatar"
+                className="avatar-img"
+              />
+            ) : (
+              <span className="avatar-letter">
+                {user.username?.charAt(0).toUpperCase() || "?"}
+              </span>
+            )}
+          </div>
+
+          {/* Upload button */}
+          <label className="avatar-upload-btn">
+            {uploading ? "Uploading..." : "Change Avatar"}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              disabled={uploading}
+              hidden
+            />
+          </label>
         </div>
+
         <div className="profile-info">
           <h1 className="profile-username">{user.username}</h1>
+
           <p className="profile-bio">
             {user.bio || "No bio yet. Add one in Settings!"}
           </p>
+
+          <p className="profile-join-date">
+            Joined {formatJoinDate(user.date)}
+          </p>
+
           <div className="profile-stats">
             <span className="stat">
               <strong>{favoriteGames.length}</strong> Games

@@ -2,9 +2,36 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const multer = require("multer");
+const path = require("path");
 const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
+
+// Multer storage setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../uploads/avatars"));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, `${req.user.id}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: function (req, file, cb) {
+    const allowed = /jpeg|jpg|png|gif/;
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowed.test(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only images are allowed"));
+    }
+  },
+});
 
 // Log that routes are being registered
 console.log("Setting up auth routes...");
@@ -88,6 +115,28 @@ router.post("/login", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+// POST /api/auth/avatar - Upload user avatar
+router.post(
+  "/avatar",
+  authMiddleware,
+  upload.single("avatar"),
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ msg: "User not found" });
+
+      // Save relative path to DB
+      user.avatar = `/uploads/avatars/${req.file.filename}`;
+      await user.save();
+
+      res.json({ msg: "Avatar uploaded successfully", avatar: user.avatar });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ msg: "Server error uploading avatar" });
+    }
+  }
+);
 
 // PUT /api/auth/profile - Update user profile
 router.put("/profile", authMiddleware, async (req, res) => {
