@@ -8,7 +8,6 @@ Author: Safia Nassiri
 ![MongoDB](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
 ![RAWG API](https://img.shields.io/badge/API-RAWG.io-orange)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Status](https://img.shields.io/badge/Status-Active-success)
 
 A web application built with the **MERN stack** designed for gamers to showcase their gaming identity, track favorite games, discover new titles, and connect with a community.
 
